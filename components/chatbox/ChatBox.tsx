@@ -27,7 +27,8 @@ const getChatMessages = async () => {
       },
     });
 
-    return res.json();
+    const data = (await res.json()) as IMessage[];
+    return data;
   } catch (e) {
     console.log(e);
     return null;
