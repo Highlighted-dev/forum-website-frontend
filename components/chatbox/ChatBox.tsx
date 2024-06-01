@@ -18,15 +18,20 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const getChatMessages = async () => {
-  const res = await fetch(getCurrentUrl() + "/externalApi/chat", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": process.env.API_KEY_TOKEN!,
-    },
-  });
+  try {
+    const res = await fetch(getCurrentUrl() + "/externalApi/chat", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.API_KEY_TOKEN!,
+      },
+    });
 
-  return res.json();
+    return res.json();
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 };
 
 const calculateTime = (date: Date) => {
