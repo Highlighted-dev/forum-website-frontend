@@ -2,6 +2,8 @@
 
 import { getCurrentUrl } from "@/utils/getCurrentUrl";
 import { Session } from "next-auth";
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function sendMessage(data: FormData, session: Session | null) {
   if (!session) {

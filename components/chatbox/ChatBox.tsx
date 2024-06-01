@@ -14,6 +14,8 @@ import { auth } from "@/auth";
 import ChatBoxForm from "./ChatBoxForm";
 import { getCurrentUrl } from "@/utils/getCurrentUrl";
 import { IMessage } from "@/@types/message";
+import dotenv from "dotenv";
+dotenv.config();
 
 const getChatMessages = async () => {
   const res = await fetch(getCurrentUrl() + "/externalApi/chat", {
