@@ -1,8 +1,3 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/wTME9btlBWv
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -18,9 +13,8 @@ import { SignOut } from "./SignOut";
 export default function NavBar({ session }: { session: Session | null }) {
   const links = [
     { href: "#", label: "Home" },
-    { href: "#", label: "About" },
+    { href: "#", label: "Discussions" },
     { href: "#", label: "Services" },
-    { href: "#", label: "Portfolio" },
     { href: "#", label: "Contact" },
   ];
   return (
@@ -34,8 +28,8 @@ export default function NavBar({ session }: { session: Session | null }) {
         </SheetTrigger>
         <SheetContent side="left">
           <Link href="#" prefetch={false}>
-            <MountainIcon className="h-6 w-6" />
-            <span className="sr-only">Acme Inc</span>
+            <img src="/strefa.svg" alt="StrefaGier" className="h-12 w-12" />
+            <span className="sr-only">StrefaGier</span>
           </Link>
           <div className="grid gap-2 py-6">
             {links.map((link) => (
@@ -52,8 +46,8 @@ export default function NavBar({ session }: { session: Session | null }) {
         </SheetContent>
       </Sheet>
       <Link href="#" className="mr-6 hidden lg:flex" prefetch={false}>
-        <MountainIcon className="h-6 w-6" />
-        <span className="sr-only">Acme Inc</span>
+        <img src="/strefa.svg" alt="StrefaGier" className="h-14 w-14" />
+        <span className="sr-only">StrefaGier</span>
       </Link>
       <div className="flex w-full justify-center">
         <NavigationMenu className="hidden lg:flex">
@@ -94,25 +88,6 @@ function MenuIcon(props: any) {
       <line x1="4" x2="20" y1="12" y2="12" />
       <line x1="4" x2="20" y1="6" y2="6" />
       <line x1="4" x2="20" y1="18" y2="18" />
-    </svg>
-  );
-}
-
-function MountainIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
     </svg>
   );
 }
