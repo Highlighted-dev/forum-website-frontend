@@ -28,7 +28,7 @@ export default function NavBar({ session }: { session: Session | null }) {
         </SheetTrigger>
         <SheetContent side="left">
           <Link href="#" prefetch={false}>
-            <img src="/Strefa.svg" alt="StrefaGier" className="h-12 w-12" />
+            <img src="/strefagier.svg" alt="StrefaGier" className="h-12 w-12" />
             <span className="sr-only">StrefaGier</span>
           </Link>
           <div className="grid gap-2 py-6">
