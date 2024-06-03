@@ -15,11 +15,12 @@ import ChatBoxForm from "./ChatBoxForm";
 import { getCurrentUrl } from "@/utils/getCurrentUrl";
 import { IMessage } from "@/@types/message";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const getChatMessages = async () => {
   try {
-    const res = await fetch(getCurrentUrl() + "/externalApi/chat", {
+    const res: Response = await fetch(getCurrentUrl() + "/externalApi/chat", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +66,11 @@ export default async function ChatBox() {
         <CardContent className="h-[300px] overflow-y-auto pt-3">
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <p>Couldnt fetch any messages</p>
+              <p>
+                {!session
+                  ? `You must be logged in to send a message`
+                  : `Couldnt fetch messages`}
+              </p>
             </div>
           </div>
         </CardContent>

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/Navbar";
 import { auth } from "@/auth";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default async function RootLayout({
           <NavBar session={session} />
           {children}
         </div>
+        <Toaster />
       </body>
     </html>
   );
