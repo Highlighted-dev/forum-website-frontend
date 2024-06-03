@@ -15,6 +15,8 @@ import ChatBoxForm from "./ChatBoxForm";
 import { getCurrentUrl } from "@/utils/getCurrentUrl";
 import { IMessage } from "@/@types/message";
 import dotenv from "dotenv";
+import Image from "next/image";
+import { calculateTime } from "@/utils/calculateTime";
 
 dotenv.config();
 
@@ -29,25 +31,14 @@ const getChatMessages = async () => {
     });
 
     const data = (await res.json()) as IMessage[];
+    if (data && data.length > 50) {
+      const messages = data.slice(0, 50);
+      return messages;
+    }
     return data;
   } catch (e) {
     console.log(e);
     return null;
-  }
-};
-
-const calculateTime = (date: Date) => {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const diffMinutes = Math.floor(diff / (1000 * 60));
-  const diffHours = Math.floor(diff / (1000 * 60 * 60));
-  const diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-  if (diffMinutes < 60) {
-    return `${diffMinutes} minutes ago`;
-  } else if (diffHours < 24) {
-    return `${diffHours} hours ago`;
-  } else {
-    return `${diffDays} days ago`;
   }
 };
 
@@ -76,6 +67,7 @@ export default async function ChatBox() {
         </CardContent>
       </Card>
     );
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between p-6 border-b">
@@ -89,7 +81,12 @@ export default async function ChatBox() {
           {messages.map((message: IMessage) => (
             <div className="flex items-start gap-4" key={message._id}>
               <Avatar className="h-10 w-10 shrink-0 border">
-                <img src="/placeholder.svg" alt="Avatar" />
+                <Image
+                  src="/placeholder.svg"
+                  alt="Avatar"
+                  width={40}
+                  height={40}
+                />
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
               <div className="flex-1">

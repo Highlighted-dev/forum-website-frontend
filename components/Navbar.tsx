@@ -12,9 +12,9 @@ import { SignOut } from "./SignOut";
 
 export default function NavBar({ session }: { session: Session | null }) {
   const links = [
-    { href: "#", label: "Home" },
-    { href: "#", label: "Discussions" },
-    { href: "#", label: "Services" },
+    { href: "/", label: "Home" },
+    { href: "/discussions", label: "Discussions" },
+    { href: "#", label: "Servers" },
     { href: "#", label: "Contact" },
   ];
   return (
