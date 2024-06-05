@@ -7,6 +7,7 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { ImSpinner2 } from "react-icons/im";
 import { useRouter } from "next/navigation";
+import { toast } from "../ui/use-toast";
 
 export interface MessageFormValues {
   message: string;
@@ -28,6 +29,10 @@ export default function ChatBoxForm({ session }: { session: Session | null }) {
       console.error("Failed to send message", error);
     } finally {
       setLoading(false);
+      toast({
+        title: "Message sent",
+        description: "Your message has been sent. It will appear soon...",
+      });
       router.refresh();
     }
   };

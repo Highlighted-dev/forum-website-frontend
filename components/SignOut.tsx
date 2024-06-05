@@ -8,7 +8,7 @@ export function SignOut() {
         "use server";
         await signOut();
       }}
-      className="w-full"
+      className="flex justify-center items-center w-full"
     >
       <Button type={`submit`}>Sign Out</Button>
     </form>
