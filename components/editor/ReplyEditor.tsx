@@ -2,7 +2,6 @@
 import { useEditor } from "@tiptap/react";
 import "../../styles/editor.css";
 import { toast } from "../ui/use-toast";
-import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import { FaChevronLeft } from "react-icons/fa";
@@ -13,22 +12,19 @@ import Link from "next/link";
 import { Session } from "next-auth";
 import { createPost } from "./PostSubmitAction";
 
-export function DiscussionEditor({
-  title,
-  content,
+export function ReplyEditor({
   session,
+  _id,
 }: {
-  title: string;
-  content: string;
   session: Session | null;
+  _id: string;
 }) {
-  const { register } = useForm<IFormData>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const editor = useEditor({
     editorProps: editorProps,
     extensions: editorExtensions,
-    content: content || "",
+    content: "",
   });
 
   if (!editor) {
@@ -41,35 +37,29 @@ export function DiscussionEditor({
 
   return (
     <form
-      action={async (formData) => {
+      action={async () => {
         setIsSaving(true);
         const content = editor.getHTML();
-        if (!content || !formData.get("title") || !formData.get("category"))
+        if (!content || !_id)
           return toast({
             title: "Error",
-            description: "Title, content and category are required",
+            description: "Title and content are required",
           });
-        await createPost(
-          content,
-          session,
-          "/externalApi/discussion",
-          undefined,
-          formData.get("title") as string,
-          formData.get("category") as string
-        );
+        await createPost(content, session, "/externalApi/discussion", _id);
         setIsSaving(false);
         toast({
           title: "Post saved",
           description: "Your post has been saved",
         });
       }}
+      className="w-full flex flex-col"
     >
       <div className="grid w-full">
-        <EditorBase editor={editor} title={title} register={register} />
+        <EditorBase editor={editor} editorClassName="w-full" />
         <div className="flex w-full items-center justify-between relative">
           <div className="flex items-center space-x-10">
             <Button variant={"ghost"}>
-              <Link href="/">
+              <Link href="/discussions">
                 <div className="flex items-center">
                   <FaChevronLeft className="mr-2 h-4 w-4" />
                   Go Back
@@ -88,7 +78,7 @@ export function DiscussionEditor({
           </p>
           <Button type="submit">
             {isSaving && <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />}
-            <span>Create</span>
+            <span>Reply</span>
           </Button>
         </div>
       </div>

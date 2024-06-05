@@ -1,4 +1,6 @@
 import { IDiscussion } from "@/@types/discussion";
+import { auth } from "@/auth";
+import { ReplyEditor } from "@/components/editor/ReplyEditor";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -38,6 +40,7 @@ export default async function DiscussionIdPage({
 }: {
   params: { discussionId: string };
 }) {
+  const session = await auth();
   const discussion = await getDiscussion(params.discussionId);
   if (!discussion)
     return (
@@ -51,8 +54,8 @@ export default async function DiscussionIdPage({
       </div>
     );
 
-  const sanitizedHTML = () => {
-    return { __html: DOMPurify.sanitize(discussion.content) };
+  const sanitizedHTML = (content: string) => {
+    return { __html: DOMPurify.sanitize(content) };
   };
   return (
     <div className="h-full w-full py-12">
@@ -64,15 +67,29 @@ export default async function DiscussionIdPage({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div dangerouslySetInnerHTML={sanitizedHTML()} id={"editor"} />
+            <div
+              dangerouslySetInnerHTML={sanitizedHTML(discussion.content)}
+              id={"editor"}
+            />
           </CardContent>
           <CardFooter>
             <p className="text-sm text-gray-500">By: {discussion.username}</p>
           </CardFooter>
         </Card>
-        <div className="flex justify-end align-center">
-          <Button>Reply</Button>
-        </div>
+        {discussion.answers?.map((answer) => (
+          <Card key={answer._id}>
+            <CardContent className="mt-4">
+              <div
+                dangerouslySetInnerHTML={sanitizedHTML(answer.content)}
+                id={"editor"}
+              />
+            </CardContent>
+            <CardFooter>
+              <p className="text-sm text-gray-500">By: {answer.username}</p>
+            </CardFooter>
+          </Card>
+        ))}
+        <ReplyEditor _id={discussion._id} session={session} />
       </div>
     </div>
   );

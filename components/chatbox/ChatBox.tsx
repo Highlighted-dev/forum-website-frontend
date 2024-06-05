@@ -83,7 +83,7 @@ export default async function ChatBox() {
             <div className="flex items-start gap-4" key={message._id}>
               <Avatar className="h-10 w-10 shrink-0 border">
                 <Image
-                  src="/placeholder.svg"
+                  src={message.icon || "/placeholder.svg"}
                   alt="Avatar"
                   width={40}
                   height={40}

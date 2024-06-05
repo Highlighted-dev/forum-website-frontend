@@ -22,6 +22,7 @@ import { ListOrderedIcon } from "lucide-react";
 import { IDiscussion } from "@/@types/discussion";
 import { Badge } from "./ui/badge";
 import DOMPurify from "isomorphic-dompurify";
+import Link from "next/link";
 export default function Discussions({
   discussions,
 }: {
@@ -95,7 +96,9 @@ export default function Discussions({
         {sortedDiscussions.map((discussion) => (
           <Card key={discussion._id}>
             <CardHeader>
-              <CardTitle>{discussion.title}</CardTitle>
+              <Link href={`/discussions/${discussion._id}`}>
+                <CardTitle>{discussion.title}</CardTitle>
+              </Link>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <Badge className="">{discussion.category}</Badge>
                 <div>

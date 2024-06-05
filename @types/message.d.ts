@@ -3,4 +3,5 @@ export interface IMessage {
   content: string;
   username: string;
   timestamp: Date;
+  icon?: string;
 }
