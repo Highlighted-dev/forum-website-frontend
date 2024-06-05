@@ -6,5 +6,6 @@ export interface IDiscussion {
   createdAt: string;
   updatedAt: string;
   pinned: boolean;
+  category: string;
   answers: any[];
 }

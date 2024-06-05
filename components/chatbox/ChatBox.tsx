@@ -33,9 +33,10 @@ const getChatMessages = async () => {
     const data = (await res.json()) as IMessage[];
     if (data && data.length > 50) {
       const messages = data.slice(0, 50);
+      messages.reverse();
       return messages;
     }
-    return data;
+    return data.reverse();
   } catch (e) {
     console.log(e);
     return null;
