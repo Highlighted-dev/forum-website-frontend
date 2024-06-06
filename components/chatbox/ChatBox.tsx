@@ -83,7 +83,7 @@ export default async function ChatBox() {
             <div className="flex items-start gap-4" key={message._id}>
               <Avatar className="h-10 w-10 shrink-0 border">
                 <Image
-                  src={message.icon || "/placeholder.svg"}
+                  src={message.user?.image || "/placeholder.svg"}
                   alt="Avatar"
                   width={40}
                   height={40}
@@ -98,7 +98,7 @@ export default async function ChatBox() {
                       className="font-medium text-blue-500 hover:underline"
                       prefetch={false}
                     >
-                      {message.username}
+                      {message.user?.name}
                     </Link>
                     <span className="ml-2 text-sm text-gray-400">
                       {calculateTime(new Date(message.timestamp))}

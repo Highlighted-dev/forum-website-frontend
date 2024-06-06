@@ -16,8 +16,7 @@ export async function sendMessage(data: FormData, session: Session | null) {
     method: "POST",
     body: JSON.stringify({
       content: data.get("message"),
-      username: session?.user?.name,
-      icon: session?.user?.image || "",
+      user: session?.user,
     }),
     headers: {
       "Content-Type": "application/json",

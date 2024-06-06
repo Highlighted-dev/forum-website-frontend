@@ -5,6 +5,8 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { getCurrentUrl } from "@/utils/getCurrentUrl";
 import { calculateTime } from "@/utils/calculateTime";
+import { IDiscussion } from "@/@types/discussion";
+import { Badge } from "./ui/badge";
 
 const getLatestDiscussions = async () => {
   try {
@@ -19,7 +21,7 @@ const getLatestDiscussions = async () => {
       }
     );
 
-    const data = (await res.json()) as any[];
+    const data = (await res.json()) as IDiscussion[];
     if (data && data.length > 5) {
       const discussions = data.slice(0, 5);
       return discussions;
@@ -43,34 +45,47 @@ export default async function LatestDiscussions() {
           </Link>
         </Button>
       </CardHeader>
-      <CardContent className="h-[400px] overflow-y-auto space-y-4 pt-3">
+      <CardContent className="h-[440px] overflow-y-hidden space-y-4 pt-3 max-w-full overflow-x-hidden">
         {discussions?.map((discussion) => (
-          <div className="flex items-start gap-4" key={discussion._id}>
-            <Avatar className="h-10 w-10 shrink-0 border">
-              <img src="/placeholder.svg" alt="Avatar" />
+          <div
+            className="flex items-start justify-center gap-4"
+            key={discussion._id}
+          >
+            <Avatar className="h-16 w-16 shrink-0 border">
+              <img
+                src={discussion.user?.image || "/placeholder.svg"}
+                alt="Avatar"
+              />
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
+            <div className="flex flex-col flex-1 justify-center ">
+              <div className="flex items-center">
                 <div>
                   <Link
                     href="#"
                     className="font-medium text-blue-500 hover:underline"
                     prefetch={false}
                   >
-                    {discussion.username}
+                    {discussion.user?.name}
                   </Link>
-                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
-                    {calculateTime(new Date(discussion.createdAt))}
-                  </span>
+                  <Link href="#" className="ml-2 text-sm text-gray-500">
+                    in <Badge>{discussion.category || ""}</Badge>
+                  </Link>
                 </div>
+              </div>
+              <div className="mt-[-4px]">
+                <span className=" text-xs text-gray-400">
+                  {calculateTime(new Date(discussion.createdAt))}
+                </span>
               </div>
               <Link
                 href={`/discussions/${discussion._id}`}
-                className="mt-2 block text-lg font-medium hover:underline"
+                className="text-base font-medium hover:underline"
                 prefetch={false}
               >
-                {discussion.title}
+                {discussion.title.length > 30
+                  ? discussion.title.slice(0, 30) + "..."
+                  : discussion.title}
               </Link>
             </div>
           </div>

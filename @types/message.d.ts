@@ -1,7 +1,10 @@
 export interface IMessage {
   _id: string;
   content: string;
-  username: string;
+  user: {
+    name: string;
+    image?: string;
+    email: string;
+  };
   timestamp: Date;
-  icon?: string;
 }

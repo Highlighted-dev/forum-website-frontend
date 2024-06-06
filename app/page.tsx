@@ -67,7 +67,7 @@ export default async function Page() {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <main className="flex-1 ">
-        <div className="container mx-auto grid grid-cols-1 gap-6 py-8 px-4 md:grid-cols-[1fr_400px] md:px-6">
+        <div className="container mx-auto grid grid-cols-1 gap-6 py-8 px-4 md:grid-cols-[1fr_460px] md:px-6">
           <ChatBox />
           <LatestDiscussions />
         </div>

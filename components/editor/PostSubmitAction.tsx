@@ -22,7 +22,7 @@ export async function createPost(
 
   const body = {
     content: content,
-    username: session?.user?.name,
+    user: session?.user,
     ...(_id && { _id: _id }),
     ...(title && { title: title }),
     ...(category && { category: category }),

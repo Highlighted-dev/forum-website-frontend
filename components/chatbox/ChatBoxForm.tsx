@@ -21,7 +21,6 @@ export default function ChatBoxForm({ session }: { session: Session | null }) {
     setLoading(true);
     const data = new FormData();
     data.append("message", formData.message);
-
     try {
       await sendMessage(data, session);
       reset(); // Reset form fields after successful submission

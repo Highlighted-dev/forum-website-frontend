@@ -143,12 +143,15 @@ export default function Discussions({
             <CardFooter>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <Avatar className="h-6 w-6">
-                  <img src="/placeholder.svg" alt={discussion.username} />
+                  <img
+                    src={discussion.user.image || "/placeholder.svg"}
+                    alt={discussion.user.name}
+                  />
                   <AvatarFallback>
-                    {discussion.username.charAt(0).toUpperCase()}
+                    {discussion.user.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div>{discussion.username}</div>
+                <div>{discussion.user.name}</div>
               </div>
             </CardFooter>
           </Card>

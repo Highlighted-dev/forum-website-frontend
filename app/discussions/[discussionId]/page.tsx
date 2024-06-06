@@ -73,7 +73,13 @@ export default async function DiscussionIdPage({
             />
           </CardContent>
           <CardFooter>
-            <p className="text-sm text-gray-500">By: {discussion.username}</p>
+            <div className="flex flex-row justify-center items-center text-sm text-gray-500">
+              <img
+                src={discussion.user.image}
+                className="w-6 h-6 rounded-full mr-1"
+              />
+              {discussion.user.name}
+            </div>
           </CardFooter>
         </Card>
         {discussion.answers?.map((answer) => (
@@ -85,7 +91,13 @@ export default async function DiscussionIdPage({
               />
             </CardContent>
             <CardFooter>
-              <p className="text-sm text-gray-500">By: {answer.username}</p>
+              <div className="flex flex-row justify-center items-center text-sm text-gray-500">
+                <img
+                  src={answer.user.image}
+                  className="w-6 h-6 rounded-full mr-1"
+                />
+                {answer.user.name}
+              </div>
             </CardFooter>
           </Card>
         ))}
