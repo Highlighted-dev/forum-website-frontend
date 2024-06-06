@@ -73,7 +73,7 @@ export default async function ChatBox() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between p-6 border-b">
         <CardTitle>Chat</CardTitle>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" disabled>
           <SettingsIcon className="h-5 w-5" />
         </Button>
       </CardHeader>

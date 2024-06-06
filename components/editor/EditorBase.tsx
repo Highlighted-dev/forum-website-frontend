@@ -21,13 +21,11 @@ export default function EditorBase({
   editor,
   title,
   register,
-  selectableCategory = true,
   editorClassName = "",
 }: {
   editor: Editor;
   title?: string;
   register?: UseFormRegister<IFormData>;
-  selectableCategory?: boolean;
   editorClassName?: string;
 }) {
   return (
@@ -42,9 +40,13 @@ export default function EditorBase({
           {...register("title")}
         />
       ) : null}
-      {selectableCategory && register ? (
+      {register ? (
         <div className="my-2">
-          <Select {...register("category")}>
+          <Select
+            onValueChange={(value) => {
+              register("category", { value });
+            }}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select category" />
             </SelectTrigger>

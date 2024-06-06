@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { Session } from "next-auth";
 import { createPost } from "./PostSubmitAction";
+import { useRouter } from "next/navigation";
 
 export function DiscussionEditor({
   title,
@@ -22,8 +23,9 @@ export function DiscussionEditor({
   content: string;
   session: Session | null;
 }) {
-  const { register } = useForm<IFormData>();
+  const { register, handleSubmit } = useForm<IFormData>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const router = useRouter();
 
   const editor = useEditor({
     editorProps: editorProps,
@@ -39,31 +41,40 @@ export function DiscussionEditor({
     );
   }
 
+  const onSubmit = async (formData: IFormData) => {
+    const content = editor.getHTML();
+    if (!content || formData.title === "" || !formData.category) {
+      return toast({
+        title: "Error",
+        description: "Title, category and content are required",
+      });
+    }
+    let data;
+    try {
+      setIsSaving(true);
+      data = await createPost(
+        content,
+        session,
+        "/externalApi/discussion",
+        undefined,
+        formData.title,
+        formData.category
+      );
+    } catch (error) {
+      console.error("Failed to send message", error);
+    } finally {
+      setIsSaving(false);
+      toast({
+        title: "Discussion created",
+        description:
+          "Your discussion has been created. You will be redirected to it shortly...",
+      });
+      router.push(`/discussions/${data?.discussion_id}`);
+    }
+  };
+
   return (
-    <form
-      action={async (formData) => {
-        setIsSaving(true);
-        const content = editor.getHTML();
-        if (!content || !formData.get("title") || !formData.get("category"))
-          return toast({
-            title: "Error",
-            description: "Title, content and category are required",
-          });
-        await createPost(
-          content,
-          session,
-          "/externalApi/discussion",
-          undefined,
-          formData.get("title") as string,
-          formData.get("category") as string
-        );
-        setIsSaving(false);
-        toast({
-          title: "Post saved",
-          description: "Your post has been saved",
-        });
-      }}
-    >
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid w-full">
         <EditorBase editor={editor} title={title} register={register} />
         <div className="flex w-full items-center justify-between relative">
@@ -86,7 +97,7 @@ export function DiscussionEditor({
             </kbd>{" "}
             for useful hotkeys
           </p>
-          <Button type="submit">
+          <Button type="submit" disabled={isSaving}>
             {isSaving && <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />}
             <span>Create</span>
           </Button>

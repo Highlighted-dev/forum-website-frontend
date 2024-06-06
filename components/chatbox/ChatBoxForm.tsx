@@ -45,7 +45,7 @@ export default function ChatBoxForm({ session }: { session: Session | null }) {
         className="w-full rounded-md border text-white"
       />
       <div className="w-full mt-2 flex justify-end">
-        <Button type="submit">
+        <Button type="submit" variant="default" disabled={loading}>
           {loading ? (
             <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (

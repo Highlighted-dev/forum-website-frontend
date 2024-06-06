@@ -27,9 +27,8 @@ export async function createPost(
     ...(title && { title: title }),
     ...(category && { category: category }),
   };
-  console.log(body);
 
-  await fetch(getCurrentUrl() + url, {
+  const res = await fetch(getCurrentUrl() + url, {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
@@ -37,8 +36,10 @@ export async function createPost(
       "x-api-key": process.env.API_KEY_TOKEN!,
     },
   });
+  const data = await res.json();
   return {
     status: "success",
     message: `Discussion created, ${session?.user?.name}!`,
+    discussion_id: data._id,
   };
 }

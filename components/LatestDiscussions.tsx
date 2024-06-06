@@ -38,7 +38,7 @@ export default async function LatestDiscussions() {
       <CardHeader className="flex flex-row items-center justify-between p-6 border-b">
         <CardTitle>Latest Discussions</CardTitle>
         <Button variant="ghost">
-          <Link href="#" prefetch={false}>
+          <Link href="/discussions" prefetch={false}>
             View all
           </Link>
         </Button>

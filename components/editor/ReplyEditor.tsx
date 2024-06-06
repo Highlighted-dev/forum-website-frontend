@@ -11,6 +11,8 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { Session } from "next-auth";
 import { createPost } from "./PostSubmitAction";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 export function ReplyEditor({
   session,
@@ -19,7 +21,9 @@ export function ReplyEditor({
   session: Session | null;
   _id: string;
 }) {
+  const { handleSubmit } = useForm();
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const router = useRouter();
 
   const editor = useEditor({
     editorProps: editorProps,
@@ -35,25 +39,30 @@ export function ReplyEditor({
     );
   }
 
+  const onSubmit = async () => {
+    const content = editor.getHTML();
+    if (!content || !_id)
+      return toast({
+        title: "Error",
+        description: "Content and _id are required",
+      });
+    try {
+      setIsSaving(true);
+      await createPost(content, session, "/externalApi/discussion", _id);
+    } catch (error) {
+      console.error("Failed to create post", error);
+    } finally {
+      setIsSaving(false);
+      toast({
+        title: "Post created",
+        description: "Your post has been created. It will appear soon...",
+      });
+      router.refresh();
+    }
+  };
+
   return (
-    <form
-      action={async () => {
-        setIsSaving(true);
-        const content = editor.getHTML();
-        if (!content || !_id)
-          return toast({
-            title: "Error",
-            description: "Title and content are required",
-          });
-        await createPost(content, session, "/externalApi/discussion", _id);
-        setIsSaving(false);
-        toast({
-          title: "Post saved",
-          description: "Your post has been saved",
-        });
-      }}
-      className="w-full flex flex-col"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col">
       <div className="grid w-full">
         <EditorBase editor={editor} editorClassName="w-full" />
         <div className="flex w-full items-center justify-between relative">
@@ -76,7 +85,7 @@ export function ReplyEditor({
             </kbd>{" "}
             for useful hotkeys
           </p>
-          <Button type="submit">
+          <Button type="submit" disabled={isSaving}>
             {isSaving && <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />}
             <span>Reply</span>
           </Button>
