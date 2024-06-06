@@ -23,13 +23,30 @@ import { IDiscussion } from "@/@types/discussion";
 import { Badge } from "./ui/badge";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./ui/pagination";
+import { useSearchParams } from "next/navigation";
 export default function Discussions({
   discussions,
+  hasNextPage,
+  hasPreviousPage,
 }: {
-  discussions: IDiscussion[] | null;
+  discussions: IDiscussion[] | undefined;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 }) {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("date");
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") ?? "1";
+
   if (!discussions)
     return (
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -64,8 +81,15 @@ export default function Discussions({
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Discussions</h1>
+      <div className="mb-6 sm:flex sm:items-center sm:justify-between grid grid-rows-2 space-y-2">
+        <div className="flex flex-row justify-center items-center space-x-4">
+          <h1 className="text-2xl font-bold">Discussions</h1>
+          <Link href="/discussions/create" className="flex justify-end">
+            <Button variant={"outline"} className="p-3">
+              New
+            </Button>
+          </Link>
+        </div>
         <div className="flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -130,6 +154,76 @@ export default function Discussions({
           </Card>
         ))}
       </div>
+      <Pagination className="mt-4">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href={
+                hasPreviousPage
+                  ? `/discussions?page=${Number(page) - 1}`
+                  : `/discussions?page=${Number(page)}`
+              }
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              href={
+                hasPreviousPage
+                  ? `/discussions?page=${Number(page) - 1}`
+                  : `/discussions?page=${Number(page)}`
+              }
+              isActive={!hasPreviousPage}
+            >
+              {Number(page) === 1
+                ? "1"
+                : !hasNextPage
+                ? Number(page) - 2
+                : Number(page) - 1}
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              href={
+                Number(page) === 1
+                  ? "/discussions?page=2"
+                  : `/discussions?page=${Number(page)}`
+              }
+              isActive={hasPreviousPage && hasNextPage}
+            >
+              {Number(page) === 1
+                ? "2"
+                : !hasNextPage
+                ? Number(page) - 1
+                : Number(page)}
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              href={
+                hasNextPage
+                  ? `/discussions?page=${Number(page) + 1}`
+                  : `/discussions?page=${Number(page)}`
+              }
+              isActive={!hasNextPage}
+            >
+              {Number(page) === 1
+                ? "3"
+                : !hasNextPage
+                ? Number(page)
+                : Number(page) + 1}
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              href={
+                hasNextPage
+                  ? `/discussions?page=${Number(page) + 1}`
+                  : `/discussions?page=${Number(page)}`
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }

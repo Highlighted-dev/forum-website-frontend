@@ -17,7 +17,6 @@ export default function NavBar({ session }: { session: Session | null }) {
     { href: "/", label: "Home" },
     { href: "/discussions", label: "Discussions" },
     { href: "/servers", label: "Servers" },
-    { href: "#", label: "Contact" },
   ];
   return (
     <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6 border-b">

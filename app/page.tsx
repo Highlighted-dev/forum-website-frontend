@@ -17,6 +17,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import DOMPurify from "isomorphic-dompurify";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Label } from "@/components/ui/label";
 
 const getDiscussions = async () => {
   try {
@@ -117,13 +124,14 @@ export default async function Page() {
             >
               Privacy Policy
             </Link>
-            <Link
-              href="#"
-              className="text-sm transition-colors hover:text-gray-400"
-              prefetch={false}
-            >
-              Contact
-            </Link>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger className="text-sm">Contact</TooltipTrigger>
+                <TooltipContent>
+                  <Label>Discord: highlighted_</Label>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </nav>
         </div>
       </footer>

@@ -24,7 +24,24 @@ const getDiscussions = async () => {
   }
 };
 
-export default async function page() {
+export default async function DiscussionsPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const discussions = await getDiscussions();
-  return <Discussions discussions={discussions} />;
+  const page = searchParams["page"] ?? "1";
+  const start = (Number(page) - 1) * 5;
+  const end = start + 5;
+  const slicedDiscussions = discussions?.slice(start, end);
+
+  const hasNextPage = end < (discussions?.length ?? 0);
+  const hasPreviousPage = start > 0;
+  return (
+    <Discussions
+      discussions={slicedDiscussions}
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
+    />
+  );
 }
