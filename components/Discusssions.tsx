@@ -33,38 +33,46 @@ import {
   PaginationPrevious,
 } from "./ui/pagination";
 import { useSearchParams } from "next/navigation";
+
 export default function Discussions({
   discussions,
   hasNextPage,
   hasPreviousPage,
+  category,
 }: {
   discussions: IDiscussion[] | undefined;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
+  category?: string;
 }) {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("date");
   const searchParams = useSearchParams();
-  const page = searchParams.get("page") ?? "1";
+  const page = parseInt(searchParams.get("page") ?? "1", 10);
 
   if (!discussions)
     return (
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Couldnt get any discussions</h1>
+          <h1 className="text-2xl font-bold">Couldn't get any discussions</h1>
         </div>
       </div>
     );
+
   const filteredDiscussions = discussions.filter((discussion) =>
     discussion.title.toLowerCase().includes(search.toLowerCase())
   );
+
   const sortedDiscussions = filteredDiscussions.sort((a, b) => {
-    if (sortBy === "date") {
+    if (a.pinned === b.pinned) {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    } else {
-      return a.category.localeCompare(b.category);
     }
+    return a.pinned ? -1 : 1;
   });
+
+  const url = (page: number) => {
+    return `/discussions/category/${category}?page=${page}`;
+  };
 
   const sanitizedHTML = (discussion: IDiscussion) => {
     if (!discussion) return;
@@ -101,7 +109,7 @@ export default function Discussions({
             <DropdownMenuContent className="w-48">
               <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
                 <DropdownMenuRadioItem value="date">Date</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="category">
+                <DropdownMenuRadioItem value="category" disabled>
                   Category
                 </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
@@ -124,7 +132,12 @@ export default function Discussions({
                 <CardTitle>{discussion.title}</CardTitle>
               </Link>
               <div className="flex items-center gap-2 text-sm text-gray-500">
-                <Badge className="">{discussion.category}</Badge>
+                <Badge>{discussion.category}</Badge>
+                {discussion.pinned && (
+                  <Badge className="bg-green-700 hover:bg-green-900">
+                    Pinned
+                  </Badge>
+                )}
                 <div>
                   {new Date(discussion.createdAt).toLocaleDateString("en-US", {
                     day: "numeric",
@@ -143,7 +156,7 @@ export default function Discussions({
             <CardFooter>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <Avatar className="h-6 w-6">
-                  <img
+                  <AvatarImage
                     src={discussion.user.image || "/placeholder.svg"}
                     alt={discussion.user.name}
                   />
@@ -161,69 +174,24 @@ export default function Discussions({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              href={
-                hasPreviousPage
-                  ? `/discussions?page=${Number(page) - 1}`
-                  : `/discussions?page=${Number(page)}`
-              }
+              href={hasPreviousPage ? url(page - 1) : url(page)}
             />
           </PaginationItem>
+          {[...Array(3)].map((_, i) => {
+            const pageNumber = page === 1 ? i + 1 : page - 1 + i;
+            return (
+              <PaginationItem key={pageNumber}>
+                <PaginationLink
+                  href={url(pageNumber)}
+                  isActive={pageNumber === page}
+                >
+                  {pageNumber}
+                </PaginationLink>
+              </PaginationItem>
+            );
+          })}
           <PaginationItem>
-            <PaginationLink
-              href={
-                hasPreviousPage
-                  ? `/discussions?page=${Number(page) - 1}`
-                  : `/discussions?page=${Number(page)}`
-              }
-              isActive={!hasPreviousPage}
-            >
-              {Number(page) === 1
-                ? "1"
-                : !hasNextPage
-                ? Number(page) - 2
-                : Number(page) - 1}
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink
-              href={
-                Number(page) === 1
-                  ? "/discussions?page=2"
-                  : `/discussions?page=${Number(page)}`
-              }
-              isActive={hasPreviousPage && hasNextPage}
-            >
-              {Number(page) === 1
-                ? "2"
-                : !hasNextPage
-                ? Number(page) - 1
-                : Number(page)}
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink
-              href={
-                hasNextPage
-                  ? `/discussions?page=${Number(page) + 1}`
-                  : `/discussions?page=${Number(page)}`
-              }
-              isActive={!hasNextPage}
-            >
-              {Number(page) === 1
-                ? "3"
-                : !hasNextPage
-                ? Number(page)
-                : Number(page) + 1}
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext
-              href={
-                hasNextPage
-                  ? `/discussions?page=${Number(page) + 1}`
-                  : `/discussions?page=${Number(page)}`
-              }
-            />
+            <PaginationNext href={hasNextPage ? url(page + 1) : url(page)} />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
