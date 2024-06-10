@@ -68,7 +68,7 @@ export default function NavBar({ session }: { session: Session | null }) {
         </NavigationMenu>
       </div>
       <div className="ml-auto">
-        {session ? <ProfileDropdown /> : <SignIn />}
+        {session ? <ProfileDropdown session={session} /> : <SignIn />}
       </div>
     </header>
   );

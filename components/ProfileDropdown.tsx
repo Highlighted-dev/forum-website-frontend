@@ -11,8 +11,13 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { FaRegUser } from "react-icons/fa";
 import { LuArrowBigRight } from "react-icons/lu";
+import { Session } from "next-auth";
 
-export default function ProfileDropdown() {
+export default function ProfileDropdown({
+  session,
+}: {
+  session: Session | null;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,7 +27,13 @@ export default function ProfileDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <FaRegUser className="mr-2 h-4 w-4" />
-            <Link href="/profile">Profile</Link>
+            <Link
+              href={
+                session?.user.id ? `/profile/${session?.user.id}` : `/profile`
+              }
+            >
+              Profile
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem disabled>
             <LuArrowBigRight className="mr-2 h-4 w-4" />
