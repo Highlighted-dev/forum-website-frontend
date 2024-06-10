@@ -9,10 +9,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import React, { useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { HeartIcon, TextIcon, UploadIcon } from "lucide-react";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import { IUser } from "@/@types/next-auth";
+import EditProfileForm from "./EditProfileForm";
 
 export default function ProfileCard({
   session,
@@ -24,35 +25,33 @@ export default function ProfileCard({
   const [editing, setEditing] = useState(false);
   return (
     <Card className="flex flex-col p-3 sm:min-w-[400px] min-w-[300px]">
-      <div className="flex flex-col items-center justify-center mb-4">
-        <Avatar className="w-24 h-24 mb-2">
-          <img src={session?.user?.image ?? ""} />
-          <AvatarFallback>User</AvatarFallback>
-        </Avatar>
-        {editing ? (
-          <Input placeholder="Change your name" />
-        ) : (
-          <h2 className="text-2xl font-bold">
-            {session?.user?.name ?? "Username"}
-          </h2>
-        )}
-      </div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold ">Bio</h3>
-        {editing ? (
-          <Input placeholder="Change your bio" />
-        ) : (
-          <p className="text-sm text-gray-300">No bio set</p>
-        )}
-      </div>
-      {editing ? (
-        <Button className="mb-4" onClick={() => setEditing(!editing)}>
-          Save Changes
-        </Button>
+      {!editing ? (
+        <>
+          <div className="flex flex-col items-center justify-center mb-4">
+            <Avatar className="w-24 h-24 mb-2">
+              <img src={user.image ?? ""} />
+              <AvatarFallback>User</AvatarFallback>
+            </Avatar>
+            <h2 className="text-2xl font-bold">
+              {session.user.name ?? "Username"}
+            </h2>
+          </div>
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold ">Bio</h3>
+            <p className="text-sm text-gray-300">
+              {session.user.bio ?? "No bio set"}
+            </p>
+          </div>
+          <Button className="mb-4" onClick={() => setEditing(!editing)}>
+            Edit Profile
+          </Button>
+        </>
       ) : (
-        <Button className="mb-4" onClick={() => setEditing(!editing)}>
-          Edit Profile
-        </Button>
+        <EditProfileForm
+          session={session}
+          setEditing={setEditing}
+          editing={editing}
+        />
       )}
       <div className="grid grid-cols-2 gap-4 mb-3">
         <Card>

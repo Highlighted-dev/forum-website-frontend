@@ -10,7 +10,7 @@ import { SignIn } from "./SignIn";
 import { Session } from "next-auth";
 import { SignOut } from "./SignOut";
 import { MenuIcon } from "lucide-react";
-import ProfileDropdown from "./ProfileDropdown";
+import ProfileDropdown from "./profile/ProfileDropdown";
 
 export default function NavBar({ session }: { session: Session | null }) {
   const links = [

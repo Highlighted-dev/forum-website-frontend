@@ -5,10 +5,10 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { SignOut } from "./SignOut";
+} from "../ui/dropdown-menu";
+import { SignOut } from "../SignOut";
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { FaRegUser } from "react-icons/fa";
 import { LuArrowBigRight } from "react-icons/lu";
 import { Session } from "next-auth";
@@ -25,16 +25,16 @@ export default function ProfileDropdown({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <FaRegUser className="mr-2 h-4 w-4" />
-            <Link
-              href={
-                session?.user.id ? `/profile/${session?.user.id}` : `/profile`
-              }
-            >
+          <Link
+            href={
+              session?.user.id ? `/profile/${session?.user.id}` : `/profile`
+            }
+          >
+            <DropdownMenuItem>
+              <FaRegUser className="mr-2 h-4 w-4" />
               Profile
-            </Link>
-          </DropdownMenuItem>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem disabled>
             <LuArrowBigRight className="mr-2 h-4 w-4" />
             <span>Something</span>

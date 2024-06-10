@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import ProfileCard from "@/components/ProfileCard";
+import ProfileCard from "@/components/profile/ProfileCard";
 import { getCurrentUrl } from "@/utils/getCurrentUrl";
 
 const getUser = async (userId: string) => {

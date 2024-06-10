@@ -5,24 +5,25 @@ import clientPromise from "./lib/mongodb";
 import { IUser } from "./@types/next-auth";
 
 export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
+  ...authConfig,
   //@ts-ignore
   adapter: MongoDBAdapter(clientPromise),
   session: { strategy: "jwt" },
   callbacks: {
-    jwt({ token, user }) {
+    async session({ session, token, user }) {
+      session.user = token.user as IUser;
+
+      return session;
+    },
+    async jwt({ token, user, trigger, session }) {
       if (user) {
-        token.id = (user as IUser).id;
-        token.role = (user as IUser).role;
-        token.bio = (user as IUser).bio;
+        token.user = user;
+      }
+      if (trigger === "update" && session) {
+        token = { ...token, user: session };
+        return token;
       }
       return token;
     },
-    session({ session, token }) {
-      session.user.id = token.id as string;
-      session.user.role = token.role as string;
-      session.user.bio = token.bio as string;
-      return session;
-    },
   },
-  ...authConfig,
 });

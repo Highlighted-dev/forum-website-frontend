@@ -17,7 +17,6 @@ const getDiscussions = async (category: string) => {
       }
     );
     const data = (await res.json()) as IDiscussion[];
-    console.log(data);
     return data;
   } catch (e) {
     console.log(e);
