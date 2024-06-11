@@ -12,7 +12,7 @@ export async function sendMessage(data: FormData, session: Session | null) {
       message: "You must be logged in to send a message",
     };
   }
-  await fetch(getCurrentUrl() + "/externalApi/chat", {
+  const res = await fetch(getCurrentUrl() + "/externalApi/chat", {
     method: "POST",
     body: JSON.stringify({
       content: data.get("message"),
@@ -23,9 +23,16 @@ export async function sendMessage(data: FormData, session: Session | null) {
       "x-api-key": process.env.API_KEY_TOKEN!,
     },
   });
+  if (!res.ok) {
+    const data = await res.json();
+    return {
+      status: "Error",
+      message: data.error,
+    };
+  }
 
   return {
-    status: "success",
+    status: "Success",
     message: `Message sent, ${session?.user?.name}!`,
   };
 }

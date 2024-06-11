@@ -21,16 +21,17 @@ export default function ChatBoxForm({ session }: { session: Session | null }) {
     setLoading(true);
     const data = new FormData();
     data.append("message", formData.message);
+    let result;
     try {
-      await sendMessage(data, session);
+      result = await sendMessage(data, session);
       reset(); // Reset form fields after successful submission
     } catch (error) {
       console.error("Failed to send message", error);
     } finally {
       setLoading(false);
       toast({
-        title: "Message sent",
-        description: "Your message has been sent. It will appear soon...",
+        title: result?.status,
+        description: result?.message,
       });
       router.refresh();
     }
