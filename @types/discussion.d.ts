@@ -11,6 +11,7 @@ export interface IDiscussion {
   updatedAt: string;
   pinned: boolean;
   category: string;
+  closed: boolean;
   answers: {
     _id: string;
     content: string;

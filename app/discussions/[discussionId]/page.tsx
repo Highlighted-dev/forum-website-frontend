@@ -9,9 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { getCurrentUrl } from "@/utils/getCurrentUrl";
 import DOMPurify from "isomorphic-dompurify";
+import { Lock } from "lucide-react";
 import React from "react";
 
 const getDiscussion = async (id: string) => {
@@ -101,7 +103,16 @@ export default async function DiscussionIdPage({
             </CardFooter>
           </Card>
         ))}
-        <ReplyEditor _id={discussion._id} session={session} />
+        {discussion.closed ? (
+          <div className="flex justify-center items-center">
+            <Lock className="h-6 w-6 mr-2 text-primary" />
+            <Label className="text-center text-primary">
+              This discussion is closed
+            </Label>
+          </div>
+        ) : (
+          <ReplyEditor _id={discussion._id} session={session} />
+        )}
       </div>
     </div>
   );
