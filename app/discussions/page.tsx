@@ -96,7 +96,13 @@ export default async function DiscussionsPage() {
                   </Avatar>
                 </div>
                 <div className="flex flex-col">
-                  <p>{discussion?.title}</p>
+                  <Link href={`/discussions/${discussion?._id}`}>
+                    <p>
+                      {discussion?.title.length! > 45
+                        ? discussion?.title.slice(0, 45) + "..."
+                        : discussion?.title}
+                    </p>
+                  </Link>
                   <p className="text-sm text-gray-500">
                     {discussion?.user.name}
                   </p>
