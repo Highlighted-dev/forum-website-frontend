@@ -19,6 +19,9 @@ import dotenv from "dotenv";
 import Image from "next/image";
 import { calculateTime } from "@/utils/calculateTime";
 import { FaWindows } from "react-icons/fa";
+import ChatSettings from "./ChatSettings";
+import { getCookie, getCookies } from "cookies-next";
+import { cookies } from "next/headers";
 
 dotenv.config();
 
@@ -48,12 +51,13 @@ const getChatMessages = async () => {
 export default async function ChatBox() {
   const session = await auth();
   const messages = await getChatMessages();
+
   if (!session || !messages)
     return (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between p-6 border-b">
           <CardTitle>Chat</CardTitle>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" disabled>
             <SettingsIcon className="h-5 w-5" />
           </Button>
         </CardHeader>
@@ -75,9 +79,7 @@ export default async function ChatBox() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between p-6 border-b">
         <CardTitle>Chat</CardTitle>
-        <Button variant="ghost" size="icon" disabled>
-          <SettingsIcon className="h-5 w-5" />
-        </Button>
+        <ChatSettings />
       </CardHeader>
       <CardContent className="h-[300px] overflow-y-auto pt-3">
         <div className="space-y-4">
@@ -114,9 +116,12 @@ export default async function ChatBox() {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col w-full border-t p-6">
-        <CardDescription className="mb-2 flex flex-row justify-start">
-          Tip: Hit <FaWindows className="ml-2 mr-1 h-5 w-3" /> + "." for emotes
-        </CardDescription>
+        {getCookie("displayTip", { cookies }) == "false" ? null : (
+          <CardDescription className="mb-2 flex flex-row justify-start">
+            Tip: Hit <FaWindows className="ml-2 mr-1 h-5 w-3" /> + "." for
+            emotes
+          </CardDescription>
+        )}
         <ChatBoxForm session={session} />
       </CardFooter>
     </Card>
