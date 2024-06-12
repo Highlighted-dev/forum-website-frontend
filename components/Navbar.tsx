@@ -46,7 +46,7 @@ export default function NavBar({ session }: { session: Session | null }) {
           </div>
         </SheetContent>
       </Sheet>
-      <Link href="#" className="mr-6 hidden lg:flex" prefetch={false}>
+      <Link href="/" className="mr-6 hidden lg:flex" prefetch={false}>
         <img src="/strefagier.svg" alt="StrefaGier" className="h-14 w-14" />
         <span className="sr-only">StrefaGier</span>
       </Link>

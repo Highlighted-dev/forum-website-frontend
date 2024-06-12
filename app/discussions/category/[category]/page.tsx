@@ -17,6 +17,14 @@ const getDiscussions = async (category: string) => {
       }
     );
     const data = (await res.json()) as IDiscussion[];
+    // Now substring the content to only show the first 100 characters. Also if the content is too long, add "..." at the end.
+    data.forEach((discussion) => {
+      discussion.content =
+        discussion.content.length > 300
+          ? discussion.content.substring(0, 600) + "..."
+          : discussion.content;
+      console.log(discussion.content);
+    });
     return data;
   } catch (e) {
     console.log(e);

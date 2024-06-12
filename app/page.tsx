@@ -1,10 +1,4 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/g6BODlhME4P
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
 import Link from "next/link";
-
 import ChatBox from "@/components/chatbox/ChatBox";
 import LatestDiscussions from "@/components/LatestDiscussions";
 import { getCurrentUrl } from "@/utils/getCurrentUrl";
@@ -25,6 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Label } from "@/components/ui/label";
 
+// Function to get discussions from API
 const getDiscussions = async () => {
   try {
     const res: Response = await fetch(
@@ -40,9 +35,20 @@ const getDiscussions = async () => {
     );
     const data = (await res.json()) as IDiscussion[];
     if (data.length > 0) {
-      //get only data that has pinned = true, only up to 6 discussions
-      return data.filter((discussion) => discussion.featured).slice(0, 6);
+      // Get only data that has featured = true, only up to 6 discussions.
+      const discussions = data
+        .filter((discussion) => discussion.featured)
+        .slice(0, 6);
+      // Now substring the content to only show the first 100 characters. Also if the content is too long, add "..." at the end.
+      discussions.forEach((discussion) => {
+        discussion.content =
+          discussion.content.length > 100
+            ? discussion.content.substring(0, 100) + "<p>...</p>"
+            : discussion.content;
+      });
+      return discussions;
     }
+
     return data;
   } catch (e) {
     console.log(e);
@@ -50,23 +56,17 @@ const getDiscussions = async () => {
   }
 };
 
+// Function to sanitize HTML content
+const sanitizeHTML = (content: string) => {
+  return DOMPurify.sanitize(content);
+};
+
 export default async function Page() {
   const discussions = await getDiscussions();
-  const sanitizedHTML = (discussion: IDiscussion) => {
-    if (!discussion) return;
-    if (discussion.content.length > 100) {
-      return {
-        __html:
-          DOMPurify.sanitize(discussion.content).substring(0, 100) + "...",
-      };
-    }
-    return {
-      __html: DOMPurify.sanitize(discussion.content),
-    };
-  };
+
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <main className="flex-1 ">
+      <main className="flex-1">
         <div className="container mx-auto grid grid-cols-1 gap-6 py-8 px-4 md:grid-cols-[1fr_460px] md:px-6">
           <ChatBox />
           <LatestDiscussions />
@@ -75,7 +75,7 @@ export default async function Page() {
           <h1 className="text-2xl font-semibold leading-none tracking-tight mb-6">
             Featured discussions
           </h1>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 ">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {discussions?.map((discussion) => (
               <Card key={discussion._id}>
                 <CardHeader>
@@ -86,7 +86,9 @@ export default async function Page() {
                 <CardContent>
                   <div
                     className="text-sm"
-                    dangerouslySetInnerHTML={sanitizedHTML(discussion)}
+                    dangerouslySetInnerHTML={{
+                      __html: sanitizeHTML(discussion.content),
+                    }}
                   />
                 </CardContent>
                 <CardFooter className="flex justify-end">
@@ -103,7 +105,7 @@ export default async function Page() {
           </div>
         </div>
       </main>
-      <footer className=" text-white border-t">
+      <footer className="text-white border-t">
         <div className="container mx-auto flex h-14 items-center justify-between px-4 md:px-6">
           <p className="text-sm">
             &copy; 2024 StrefaGier Forum by Highlighted-dev. All rights

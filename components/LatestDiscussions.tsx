@@ -39,11 +39,9 @@ export default async function LatestDiscussions() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between p-6 border-b">
         <CardTitle>Latest Discussions</CardTitle>
-        <Button variant="ghost">
-          <Link href="/discussions" prefetch={false}>
-            View all
-          </Link>
-        </Button>
+        <Link href="/discussions" prefetch={false}>
+          <Button variant="ghost">View all</Button>
+        </Link>
       </CardHeader>
       <CardContent className="h-[440px] overflow-y-hidden space-y-4 pt-3 max-w-full overflow-x-hidden">
         {discussions?.map((discussion) => (

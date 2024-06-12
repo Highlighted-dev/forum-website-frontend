@@ -8,7 +8,6 @@ import { Button } from "../ui/button";
 import { ImSpinner2 } from "react-icons/im";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/use-toast";
-
 export interface MessageFormValues {
   message: string;
 }

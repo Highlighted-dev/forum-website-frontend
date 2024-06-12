@@ -2,6 +2,7 @@ import React from "react";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -17,6 +18,7 @@ import { IMessage } from "@/@types/message";
 import dotenv from "dotenv";
 import Image from "next/image";
 import { calculateTime } from "@/utils/calculateTime";
+import { FaWindows } from "react-icons/fa";
 
 dotenv.config();
 
@@ -112,6 +114,9 @@ export default async function ChatBox() {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col w-full border-t p-6">
+        <CardDescription className="mb-2 flex flex-row justify-start">
+          Tip: Hit <FaWindows className="ml-2 mr-1 h-5 w-3" /> + "." for emotes
+        </CardDescription>
         <ChatBoxForm session={session} />
       </CardFooter>
     </Card>
