@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SettingsIcon } from "lucide-react";
 import React from "react";
 
-export default function loading() {
+export default function MainPageLoading() {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <main className="flex-1">
