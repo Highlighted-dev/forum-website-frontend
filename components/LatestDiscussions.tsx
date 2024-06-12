@@ -58,18 +58,16 @@ export default async function LatestDiscussions() {
             </Avatar>
             <div className="flex flex-col flex-1 justify-center ">
               <div className="flex items-center">
-                <div>
-                  <Link
-                    href="#"
-                    className="font-medium text-blue-500 hover:underline"
-                    prefetch={false}
-                  >
-                    {discussion.user?.name}
-                  </Link>
-                  <Link href="#" className="ml-2 text-sm text-gray-500">
-                    in <Badge>{discussion.category || ""}</Badge>
-                  </Link>
-                </div>
+                <Link
+                  href="#"
+                  className="font-medium text-blue-500 hover:underline"
+                  prefetch={false}
+                >
+                  {discussion.user?.name}
+                </Link>
+                <Link href="#" className="ml-2 text-sm text-gray-500">
+                  in <Badge>{discussion.category || ""}</Badge>
+                </Link>
               </div>
               <div className="mt-[-4px]">
                 <span className=" text-xs text-gray-400">
