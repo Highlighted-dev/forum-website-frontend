@@ -21,7 +21,7 @@ const getLatestDiscussions = async () => {
       }
     );
 
-    const data = (await res.json()) as IDiscussion[];
+    const data = ((await res.json()) as IDiscussion[]).reverse();
     if (data && data.length > 5) {
       const discussions = data.slice(0, 5);
       return discussions;
