@@ -76,10 +76,11 @@ export default function Discussions({
 
   const sanitizedHTML = (discussion: IDiscussion) => {
     if (!discussion) return;
-    if (discussion.content.length > 100) {
+    if (discussion.content.length > 300) {
       return {
         __html:
-          DOMPurify.sanitize(discussion.content).substring(0, 250) + "...",
+          DOMPurify.sanitize(discussion.content).substring(0, 300) +
+          "<p>...</p>",
       };
     }
     return {

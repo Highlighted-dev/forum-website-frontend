@@ -27,7 +27,7 @@ export default function ProfileCard({
   user,
 }: {
   session: Session;
-  user: IUser & {
+  user?: IUser & {
     numberOfDiscussions: number;
     numberOfReplies: number;
   };
@@ -39,14 +39,14 @@ export default function ProfileCard({
         <>
           <div className="flex flex-col items-center justify-center mb-4">
             <Avatar className="w-24 h-24 mb-2">
-              <img src={user.image ?? ""} />
+              <img src={user?.image ?? ""} />
               <AvatarFallback>User</AvatarFallback>
             </Avatar>
-            <h2 className="text-2xl font-bold">{user.name ?? "Username"}</h2>
+            <h2 className="text-2xl font-bold">{user?.name ?? "Username"}</h2>
           </div>
           <div className="mb-4">
             <h3 className="text-lg font-semibold ">Bio</h3>
-            <p className="text-sm text-gray-300">{user.bio ?? "No bio set"}</p>
+            <p className="text-sm text-gray-300">{user?.bio ?? "No bio set"}</p>
           </div>
           <Button className="mb-4" onClick={() => setEditing(!editing)}>
             Edit Profile
@@ -76,14 +76,14 @@ export default function ProfileCard({
               </TooltipProvider>
             </CardTitle>
             <CardDescription>
-              {user.numberOfDiscussions + user.numberOfReplies}
+              {user?.numberOfDiscussions || 0 + 0 || user?.numberOfReplies}
             </CardDescription>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader>
             <CardTitle>Role</CardTitle>
-            <CardDescription>{user.role}</CardDescription>
+            <CardDescription>{user?.role}</CardDescription>
           </CardHeader>
         </Card>
       </div>

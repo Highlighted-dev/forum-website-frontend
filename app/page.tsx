@@ -41,7 +41,7 @@ const getDiscussions = async () => {
     const data = (await res.json()) as IDiscussion[];
     if (data.length > 0) {
       //get only data that has pinned = true, only up to 6 discussions
-      return data.filter((discussion) => discussion.pinned).slice(0, 6);
+      return data.filter((discussion) => discussion.featured).slice(0, 6);
     }
     return data;
   } catch (e) {
@@ -73,7 +73,7 @@ export default async function Page() {
         </div>
         <div className="container mx-auto px-4 md:px-6 mb-6">
           <h1 className="text-2xl font-semibold leading-none tracking-tight mb-6">
-            Pinned discussions
+            Featured discussions
           </h1>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 ">
             {discussions?.map((discussion) => (

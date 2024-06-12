@@ -67,14 +67,14 @@ export default async function DiscussionsPage() {
             key={discussion?._id}
             className="grid grid-cols-5 min-h-[100px]"
           >
-            <CardHeader className="flex flex-col items-start justify-center col-span-3">
+            <CardHeader className="flex flex-col items-start justify-center sm:col-span-3 col-span-2">
               <Link href={`/discussions/category/${discussion?.category}`}>
                 <CardTitle className="text-2xl font-bold">
                   {discussion?.category}
                 </CardTitle>
               </Link>
             </CardHeader>
-            <CardContent className="p-0 flex items-center justify-start col-span-2">
+            <CardContent className="p-0 flex items-center justify-start sm:col-span-2 col-span-3">
               <div className="p-4 flex flex-col justify-center items-center mr-2">
                 <Label className="text-xl">
                   {
