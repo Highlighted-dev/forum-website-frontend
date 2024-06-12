@@ -27,7 +27,10 @@ export default function ChatSettings() {
           <div className="flex flex-row items-center space-x-2">
             <Switch
               id="airplane-mode"
-              checked={getCookie("displayTip") === "true"}
+              checked={
+                getCookie("displayTip") === "true" ||
+                getCookie("displayTip") === undefined
+              }
               onCheckedChange={(checked) => {
                 setCookie("displayTip", `${checked}`, {
                   expires: new Date("2038-01-19T03:14:07"),
