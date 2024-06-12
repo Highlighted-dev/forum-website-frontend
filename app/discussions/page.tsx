@@ -55,8 +55,8 @@ export default async function DiscussionsPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-6 sm:flex sm:items-center sm:justify-between grid grid-rows-2 space-y-2">
+    <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
+      <div className="mb-6 md:flex md:items-center md:justify-between grid grid-rows-2 space-y-2">
         <div className="flex flex-row justify-center items-center space-x-4">
           <h1 className="text-2xl font-bold">Discussions</h1>
         </div>
@@ -67,14 +67,14 @@ export default async function DiscussionsPage() {
             key={discussion?._id}
             className="grid grid-cols-5 min-h-[100px]"
           >
-            <CardHeader className="flex flex-col items-start justify-center sm:col-span-3 col-span-2">
+            <CardHeader className="flex flex-col items-start justify-center lg:col-span-3 col-span-2">
               <Link href={`/discussions/category/${discussion?.category}`}>
                 <CardTitle className="text-2xl font-bold">
                   {discussion?.category}
                 </CardTitle>
               </Link>
             </CardHeader>
-            <CardContent className="p-0 flex items-center justify-start sm:col-span-2 col-span-3">
+            <CardContent className="p-0 flex items-center justify-start lg:col-span-2 col-span-3">
               <div className="p-4 flex flex-col justify-center items-center mr-2">
                 <Label className="text-xl">
                   {
