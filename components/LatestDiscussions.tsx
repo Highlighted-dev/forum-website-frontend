@@ -59,7 +59,7 @@ export default async function LatestDiscussions() {
             <div className="flex flex-col flex-1 justify-center ">
               <div className="flex items-center">
                 <Link
-                  href="#"
+                  href={`/profile/${discussion.user?._id}`}
                   className="font-medium text-blue-500 hover:underline"
                   prefetch={false}
                 >

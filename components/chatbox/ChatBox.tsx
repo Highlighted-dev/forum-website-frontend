@@ -98,7 +98,7 @@ export default async function ChatBox() {
                 <div className="flex items-center justify-between">
                   <div>
                     <Link
-                      href="#"
+                      href={`/profile/${message.user?._id}` || "#"}
                       className="font-medium text-blue-500 hover:underline"
                       prefetch={false}
                     >

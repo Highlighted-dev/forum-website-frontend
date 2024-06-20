@@ -28,6 +28,7 @@ export default function ProfileCard({
 }: {
   session: Session;
   user?: IUser & {
+    _id: string;
     numberOfDiscussions: number;
     numberOfReplies: number;
   };
@@ -48,9 +49,11 @@ export default function ProfileCard({
             <h3 className="text-lg font-semibold ">Bio</h3>
             <p className="text-sm text-gray-300">{user?.bio ?? "No bio set"}</p>
           </div>
-          <Button className="mb-4" onClick={() => setEditing(!editing)}>
-            Edit Profile
-          </Button>
+          {user?._id === session?.user?.id && (
+            <Button className="mb-4" onClick={() => setEditing(!editing)}>
+              Edit Profile
+            </Button>
+          )}
         </>
       ) : (
         <EditProfileForm
