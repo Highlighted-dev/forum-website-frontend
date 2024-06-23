@@ -7,6 +7,7 @@ import { getCurrentUrl } from "@/utils/getCurrentUrl";
 import { calculateTime } from "@/utils/calculateTime";
 import { IDiscussion } from "@/@types/discussion";
 import { Badge } from "./ui/badge";
+import { getRankColor } from "@/utils/rankColors";
 
 const getLatestDiscussions = async () => {
   try {
@@ -60,7 +61,9 @@ export default async function LatestDiscussions() {
               <div className="flex items-center">
                 <Link
                   href={`/profile/${discussion.user?._id}`}
-                  className="font-medium text-blue-500 hover:underline"
+                  className={`font-medium ${getRankColor(
+                    discussion.user?.role || ""
+                  )} hover:underline`}
                   prefetch={false}
                 >
                   {discussion.user?.name}

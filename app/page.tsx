@@ -80,20 +80,22 @@ export default async function Page() {
             </h1>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {discussions?.map((discussion) => (
-                <Card key={discussion._id}>
-                  <CardHeader>
-                    <CardTitle className="text-5xl font-bold">
-                      {discussion.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div
-                      className="text-sm"
-                      dangerouslySetInnerHTML={{
-                        __html: sanitizeHTML(discussion.content),
-                      }}
-                    />
-                  </CardContent>
+                <Card key={discussion._id} className="grid grid-rows-5">
+                  <div className="row-span-4">
+                    <CardHeader>
+                      <CardTitle className="text-5xl font-bold">
+                        {discussion.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div
+                        className="text-sm"
+                        dangerouslySetInnerHTML={{
+                          __html: sanitizeHTML(discussion.content),
+                        }}
+                      />
+                    </CardContent>
+                  </div>
                   <CardFooter className="flex justify-end">
                     <Link
                       href={`/discussions/${discussion._id}`}

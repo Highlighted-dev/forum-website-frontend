@@ -7,6 +7,7 @@ export interface IDiscussion {
     name: string;
     image?: string;
     email: string;
+    role: string;
   };
   createdAt: string;
   updatedAt: string;
@@ -21,6 +22,7 @@ export interface IDiscussion {
       name: string;
       image?: string;
       email: string;
+      role: string;
     };
     createdAt: string;
     updatedAt: string;
