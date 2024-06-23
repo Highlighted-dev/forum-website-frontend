@@ -1,6 +1,7 @@
 import { IDiscussion } from "@/@types/discussion";
 import { auth } from "@/auth";
 import { ReplyEditor } from "@/components/editor/ReplyEditor";
+import TooltipReactions from "@/components/TooltipReactions";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -74,7 +75,8 @@ export default async function DiscussionIdPage({
               id={"editor"}
             />
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex justify-between">
+            <TooltipReactions />
             <div className="flex flex-row justify-center items-center text-sm text-gray-500">
               <img
                 src={discussion.user.image}
@@ -92,7 +94,8 @@ export default async function DiscussionIdPage({
                 id={"editor"}
               />
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex justify-between">
+              <TooltipReactions />
               <div className="flex flex-row justify-center items-center text-sm text-gray-500">
                 <img
                   src={answer.user.image}

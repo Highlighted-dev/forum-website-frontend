@@ -21,6 +21,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { Label } from "../ui/label";
+import { getRankColor } from "@/utils/rankColors";
 
 export default function ProfileCard({
   session,
@@ -86,7 +87,11 @@ export default function ProfileCard({
         <Card>
           <CardHeader>
             <CardTitle>Role</CardTitle>
-            <CardDescription>{user?.role}</CardDescription>
+            <CardDescription
+              className={`font-bold ${getRankColor(user?.role || "")}`}
+            >
+              {user?.role}
+            </CardDescription>
           </CardHeader>
         </Card>
       </div>

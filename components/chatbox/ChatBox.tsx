@@ -22,6 +22,7 @@ import { FaWindows } from "react-icons/fa";
 import ChatSettings from "./ChatSettings";
 import { getCookie, getCookies } from "cookies-next";
 import { cookies } from "next/headers";
+import { getRankColor } from "@/utils/rankColors";
 
 dotenv.config();
 
@@ -95,11 +96,13 @@ export default async function ChatBox() {
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
               <div className="flex-1">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between ">
                   <div>
                     <Link
                       href={`/profile/${message.user?._id}` || "#"}
-                      className="font-medium text-blue-500 hover:underline"
+                      className={
+                        "hover:underline " + getRankColor(message.user?.role)
+                      }
                       prefetch={false}
                     >
                       {message.user?.name}

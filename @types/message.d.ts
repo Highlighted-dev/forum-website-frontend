@@ -6,6 +6,7 @@ export interface IMessage {
     name: string;
     image?: string;
     email: string;
+    role: string;
   };
   timestamp: Date;
 }
