@@ -1,7 +1,7 @@
 import { IDiscussion } from "@/@types/discussion";
 import { auth } from "@/auth";
 import { ReplyEditor } from "@/components/editor/ReplyEditor";
-import TooltipReactions from "@/components/TooltipReactions";
+import TooltipReactions from "@/components/reactions/TooltipReactions";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,7 +16,9 @@ import { getCurrentUrl } from "@/utils/getCurrentUrl";
 import DOMPurify from "isomorphic-dompurify";
 import { Lock } from "lucide-react";
 import React from "react";
-
+import { AiOutlineLike, AiOutlineHeart } from "react-icons/ai";
+import { LiaLaughSquintSolid, LiaMehSolid } from "react-icons/lia";
+import { PiSmileySad } from "react-icons/pi";
 const getDiscussion = async (id: string) => {
   try {
     const res: Response = await fetch(
@@ -60,6 +62,14 @@ export default async function DiscussionIdPage({
   const sanitizedHTML = (content: string) => {
     return { __html: DOMPurify.sanitize(content) };
   };
+
+  const reactions = [
+    { icon: <AiOutlineLike />, reaction: "like" },
+    { icon: <AiOutlineHeart />, reaction: "love" },
+    { icon: <LiaLaughSquintSolid />, reaction: "funny" },
+    { icon: <LiaMehSolid />, reaction: "cringe" },
+    { icon: <PiSmileySad />, reaction: "sad" },
+  ];
   return (
     <div className="h-full w-full py-12">
       <div className="container px-4 md:px-6 space-y-4">
@@ -76,7 +86,32 @@ export default async function DiscussionIdPage({
             />
           </CardContent>
           <CardFooter className="flex justify-between">
-            <TooltipReactions />
+            <div className="flex flex-row gap-2">
+              <TooltipReactions id={params.discussionId} session={session} />
+              {discussion.reactions?.map((reaction) => (
+                <div key={reaction._id} className="flex flex-row">
+                  {reactions.map((r) => {
+                    if (r.reaction === reaction.reaction.toLowerCase()) {
+                      return (
+                        <div
+                          className="flex flex-row items-center"
+                          key={r.reaction}
+                        >
+                          {r.icon}
+                          <Label className="text-sm text-gray-500 ml-1">
+                            {
+                              discussion.reactions?.filter(
+                                (re) => re.reaction.toLowerCase() === r.reaction
+                              ).length
+                            }
+                          </Label>
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              ))}
+            </div>
             <div className="flex flex-row justify-center items-center text-sm text-gray-500">
               <img
                 src={discussion.user.image}
@@ -95,7 +130,37 @@ export default async function DiscussionIdPage({
               />
             </CardContent>
             <CardFooter className="flex justify-between">
-              <TooltipReactions />
+              <div className="flex flex-row gap-2">
+                <TooltipReactions
+                  id={params.discussionId}
+                  session={session}
+                  answerId={answer._id}
+                />
+                {answer.reactions?.map((reaction) => (
+                  <div key={reaction._id} className="flex flex-row">
+                    {reactions.map((r) => {
+                      if (r.reaction === reaction.reaction.toLowerCase()) {
+                        return (
+                          <div
+                            className="flex flex-row items-center"
+                            key={r.reaction}
+                          >
+                            {r.icon}
+                            <Label className="text-sm text-gray-500 ml-1">
+                              {
+                                answer.reactions?.filter(
+                                  (re) =>
+                                    re.reaction.toLowerCase() === r.reaction
+                                ).length
+                              }
+                            </Label>
+                          </div>
+                        );
+                      }
+                    })}
+                  </div>
+                ))}
+              </div>
               <div className="flex flex-row justify-center items-center text-sm text-gray-500">
                 <img
                   src={answer.user.image}
