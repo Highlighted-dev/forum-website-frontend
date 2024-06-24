@@ -13,8 +13,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { getCurrentUrl } from "@/utils/getCurrentUrl";
+import { getRankColor } from "@/utils/rankColors";
 import DOMPurify from "isomorphic-dompurify";
 import { Lock } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 import { AiOutlineLike, AiOutlineHeart } from "react-icons/ai";
 import { LiaLaughSquintSolid, LiaMehSolid } from "react-icons/lia";
@@ -117,7 +119,14 @@ export default async function DiscussionIdPage({
                 src={discussion.user.image}
                 className="w-6 h-6 rounded-full mr-1"
               />
-              {discussion.user.name}
+              <Link
+                className={`text-sm ${getRankColor(
+                  discussion?.user.role || ""
+                )}`}
+                href={`/profile/${discussion.user._id}`}
+              >
+                {discussion.user.name}
+              </Link>
             </div>
           </CardFooter>
         </Card>
@@ -166,7 +175,14 @@ export default async function DiscussionIdPage({
                   src={answer.user.image}
                   className="w-6 h-6 rounded-full mr-1"
                 />
-                {answer.user.name}
+                <Link
+                  className={`text-sm ${getRankColor(
+                    discussion?.user.role || ""
+                  )}`}
+                  href={`/profile/${answer.user._id}`}
+                >
+                  {answer.user.name}
+                </Link>
               </div>
             </CardFooter>
           </Card>

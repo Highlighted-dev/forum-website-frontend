@@ -12,6 +12,7 @@ import { getCurrentUrl } from "@/utils/getCurrentUrl";
 import Link from "next/link";
 import React, { Suspense } from "react";
 import DiscussionsLoading from "./discussionsLoading";
+import { getRankColor } from "@/utils/rankColors";
 
 const getDiscussions = async () => {
   try {
@@ -105,9 +106,14 @@ export default async function DiscussionsPage() {
                           : discussion?.title}
                       </p>
                     </Link>
-                    <p className="text-sm text-gray-500">
+                    <Link
+                      className={`text-sm ${getRankColor(
+                        discussion?.user.role || ""
+                      )}`}
+                      href={`/profile/${discussion?.user._id}`}
+                    >
                       {discussion?.user.name}
-                    </p>
+                    </Link>
                   </div>
                 </div>
               </CardContent>

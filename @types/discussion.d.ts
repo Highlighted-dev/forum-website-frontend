@@ -26,6 +26,7 @@ export interface IDiscussion {
     _id: string;
     content: string;
     user: {
+      _id: string;
       name: string;
       image?: string;
       email: string;

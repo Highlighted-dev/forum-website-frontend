@@ -33,6 +33,7 @@ import {
   PaginationPrevious,
 } from "./ui/pagination";
 import { useSearchParams } from "next/navigation";
+import { getRankColor } from "@/utils/rankColors";
 
 export default function Discussions({
   discussions,
@@ -158,7 +159,14 @@ export default function Discussions({
                     {discussion.user.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div>{discussion.user.name}</div>
+                <Link
+                  className={`text-sm ${getRankColor(
+                    discussion?.user.role || ""
+                  )}`}
+                  href={`/profile/${discussion.user._id}`}
+                >
+                  {discussion.user.name}
+                </Link>
               </div>
             </CardFooter>
           </Card>
