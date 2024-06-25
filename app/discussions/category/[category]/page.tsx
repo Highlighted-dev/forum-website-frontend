@@ -69,12 +69,15 @@ export default async function CategoryPage({
 
   const hasNextPage = end < (discussions?.length ?? 0);
   const hasPreviousPage = start > 0;
+
+  const totalPages = Math.ceil((discussions?.length ?? 0) / 5);
   return (
     <Discussions
       discussions={slicedDiscussions}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
       category={params.category}
+      totalPages={totalPages}
     />
   );
 }

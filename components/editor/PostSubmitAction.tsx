@@ -37,6 +37,13 @@ export async function createPost(
     },
   });
   const data = await res.json();
+  if (!res.ok) {
+    return {
+      status: "error",
+      message: data.error,
+    };
+  }
+
   return {
     status: "success",
     message: `Discussion created, ${session?.user?.name}!`,

@@ -64,6 +64,8 @@ export function DiscussionEditor({
       console.error("Failed to send message", error);
     } finally {
       setIsSaving(false);
+      if (data?.status === "error")
+        return toast({ title: "Error", description: data.message });
       reset();
       toast({
         title: "Discussion created",

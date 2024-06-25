@@ -33,16 +33,24 @@ import {
 } from "./ui/pagination";
 import { useSearchParams } from "next/navigation";
 import { getRankColor } from "@/utils/rankColors";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 export default function Discussions({
   discussions,
   hasNextPage,
   hasPreviousPage,
+  totalPages,
   category,
 }: {
   discussions: IDiscussion[] | undefined;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
+  totalPages: number;
   category?: string;
 }) {
   const [search, setSearch] = useState("");
@@ -109,13 +117,23 @@ export default function Discussions({
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Input
-            type="search"
-            placeholder="Search discussions..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-xs"
-          />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Input
+                  type="search"
+                  placeholder="Search discussions..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="max-w-xs"
+                  disabled
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Coming soon</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
       <div className="grid gap-6">
@@ -180,10 +198,12 @@ export default function Discussions({
           </PaginationItem>
           {[...Array(3)].map((_, i) => {
             const pageNumber = page === 1 ? i + 1 : page - 1 + i;
+            const isDisabled = pageNumber < 1 || pageNumber > totalPages;
+
             return (
               <PaginationItem key={pageNumber}>
                 <PaginationLink
-                  href={url(pageNumber)}
+                  href={isDisabled ? "#" : url(pageNumber)}
                   isActive={pageNumber === page}
                 >
                   {pageNumber}
