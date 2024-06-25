@@ -118,14 +118,14 @@ export default async function Page() {
             </p>
             <nav className="hidden space-x-4 md:flex">
               <Link
-                href="#"
+                href="/tos"
                 className="text-sm transition-colors hover:text-gray-400"
                 prefetch={false}
               >
                 Terms of Service
               </Link>
               <Link
-                href="#"
+                href="/privacy"
                 className="text-sm transition-colors hover:text-gray-400"
                 prefetch={false}
               >

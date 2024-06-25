@@ -72,7 +72,10 @@ export default async function LatestDiscussions() {
                 >
                   {discussion.user?.name}
                 </Link>
-                <Link href="#" className="ml-2 text-sm text-gray-500">
+                <Link
+                  href={`/discussions/category/${discussion.category}`}
+                  className="ml-2 text-sm text-gray-500"
+                >
                   in <Badge>{discussion.category || ""}</Badge>
                 </Link>
               </div>
