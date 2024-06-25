@@ -8,6 +8,7 @@ import { calculateTime } from "@/utils/calculateTime";
 import { IDiscussion } from "@/@types/discussion";
 import { Badge } from "./ui/badge";
 import { getRankColor } from "@/utils/rankColors";
+import Image from "next/image";
 
 const getLatestDiscussions = async () => {
   try {
@@ -19,6 +20,7 @@ const getLatestDiscussions = async () => {
           "Content-Type": "application/json",
           "x-api-key": process.env.API_KEY_TOKEN!,
         },
+        cache: "no-cache",
       }
     );
 
@@ -51,9 +53,11 @@ export default async function LatestDiscussions() {
             key={discussion._id}
           >
             <Avatar className="h-16 w-16 shrink-0 border">
-              <img
+              <Image
                 src={discussion.user?.image || "/placeholder.svg"}
                 alt="Avatar"
+                width={64}
+                height={64}
               />
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>

@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 
-export default function page() {
+export default function loading() {
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6 flex flex-col justify-center items-center">
@@ -13,17 +13,8 @@ export default function page() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <a
-              href="https://www.gametracker.com/server_info/130.162.230.182:27015/"
-              target="_blank"
-            >
-              <Image
-                src="https://cache.gametracker.com/server_info/130.162.230.182:27015/b_350_20_681212_280b0b_fef2f2_000000.png"
-                width="350"
-                height="20"
-                alt="TTT server banner"
-              />
-            </a>
+            <Skeleton className="h-5 w-full mt-2" />
+            <Skeleton className="h-5 w-full mt-2" />
           </CardContent>
         </Card>
       </div>

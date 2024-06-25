@@ -23,7 +23,7 @@ export function DiscussionEditor({
   content: string;
   session: Session | null;
 }) {
-  const { register, handleSubmit } = useForm<IFormData>();
+  const { register, handleSubmit, reset } = useForm<IFormData>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const router = useRouter();
 
@@ -64,6 +64,7 @@ export function DiscussionEditor({
       console.error("Failed to send message", error);
     } finally {
       setIsSaving(false);
+      reset();
       toast({
         title: "Discussion created",
         description:

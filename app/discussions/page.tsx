@@ -13,6 +13,7 @@ import Link from "next/link";
 import React, { Suspense } from "react";
 import DiscussionsLoading from "./discussionsLoading";
 import { getRankColor } from "@/utils/rankColors";
+import Image from "next/image";
 
 const getDiscussions = async () => {
   try {
@@ -91,9 +92,11 @@ export default async function DiscussionsPage() {
                 <div className="flex justify-center items-center">
                   <div className="mr-2">
                     <Avatar className="h-10 w-10 shrink-0 border">
-                      <img
+                      <Image
                         src={discussion?.user.image || "/placeholder.svg"}
                         alt="Avatar"
+                        width={40}
+                        height={40}
                       />
                       <AvatarFallback>JD</AvatarFallback>
                     </Avatar>

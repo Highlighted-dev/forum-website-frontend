@@ -26,7 +26,6 @@ import Link from "next/link";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -98,14 +97,14 @@ export default function Discussions({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="flex items-center gap-2">
                 <ListOrderedIcon className="h-4 w-4" />
-                Sort by: {sortBy === "date" ? "Date" : "Category"}
+                Sort by: {sortBy === "date" ? "Date" : "Username"}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48">
               <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
                 <DropdownMenuRadioItem value="date">Date</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="category" disabled>
-                  Category
+                <DropdownMenuRadioItem value="username" disabled>
+                  Username
                 </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>

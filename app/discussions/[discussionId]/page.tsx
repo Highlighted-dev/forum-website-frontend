@@ -16,6 +16,7 @@ import { getCurrentUrl } from "@/utils/getCurrentUrl";
 import { getRankColor } from "@/utils/rankColors";
 import DOMPurify from "isomorphic-dompurify";
 import { Lock } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { AiOutlineLike, AiOutlineHeart } from "react-icons/ai";
@@ -31,6 +32,7 @@ const getDiscussion = async (id: string) => {
           "Content-Type": "application/json",
           "x-api-key": process.env.API_KEY_TOKEN!,
         },
+        cache: "no-store",
       }
     );
 
@@ -115,9 +117,12 @@ export default async function DiscussionIdPage({
               ))}
             </div>
             <div className="flex flex-row justify-center items-center text-sm text-gray-500">
-              <img
-                src={discussion.user.image}
-                className="w-6 h-6 rounded-full mr-1"
+              <Image
+                src={discussion.user.image || "/placeholder.svg"}
+                className="rounded-full mr-1"
+                alt="Avatar"
+                width={30}
+                height={30}
               />
               <Link
                 className={`text-sm ${getRankColor(
@@ -171,9 +176,12 @@ export default async function DiscussionIdPage({
                 ))}
               </div>
               <div className="flex flex-row justify-center items-center text-sm text-gray-500">
-                <img
-                  src={answer.user.image}
-                  className="w-6 h-6 rounded-full mr-1"
+                <Image
+                  src={answer.user.image || "/placeholder.svg"}
+                  className="rounded-full mr-1"
+                  alt="Avatar"
+                  width={30}
+                  height={30}
                 />
                 <Link
                   className={`text-sm ${getRankColor(
