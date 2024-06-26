@@ -20,7 +20,7 @@ const getLatestDiscussions = async () => {
           "Content-Type": "application/json",
           "x-api-key": process.env.API_KEY_TOKEN!,
         },
-        cache: "no-cache",
+        cache: "no-store",
       }
     );
 
