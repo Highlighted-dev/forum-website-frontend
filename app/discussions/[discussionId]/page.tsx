@@ -78,14 +78,15 @@ export default async function DiscussionIdPage({
     <div className="h-full w-full py-12">
       <div className="container px-4 md:px-6 space-y-4">
         <LockDiscussionForm discussion={discussion} session={session} />
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader>
-            <CardTitle className="text-5xl font-bold">
+            <CardTitle className="sm:text-5xl text-3xl font-bold text-ellipsis overflow-hidden">
               {discussion.title}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div
+              className="text-ellipsis overflow-hidden"
               dangerouslySetInnerHTML={sanitizedHTML(discussion.content)}
               id={"editor"}
             />

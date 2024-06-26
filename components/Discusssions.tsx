@@ -138,10 +138,10 @@ export default function Discussions({
       </div>
       <div className="grid gap-6">
         {sortedDiscussions.map((discussion) => (
-          <Card key={discussion._id}>
+          <Card key={discussion._id} className="flex flex-col overflow-hidden">
             <CardHeader>
               <Link href={`/discussions/${discussion._id}`}>
-                <div className="text-5xl font-bold text-ellipsis overflow-hidden 2xl:max-w-[1400px] lg:max-w-[1000px] md:max-w-[700px] sm:max-w-[600px] max-w-[300px] ">
+                <div className="sm:text-5xl text-3xl font-bold text-ellipsis overflow-hidden ">
                   {discussion.title}
                 </div>
               </Link>
@@ -163,7 +163,7 @@ export default function Discussions({
             </CardHeader>
             <CardContent>
               <div
-                className="text-gray-400 text-ellipsis overflow-hidden 2xl:max-w-[1400px] lg:max-w-[1000px] md:max-w-[700px] sm:max-w-[600px] max-w-[300px] "
+                className="text-gray-400 text-ellipsis overflow-hidden "
                 dangerouslySetInnerHTML={sanitizedHTML(discussion)}
               />
             </CardContent>

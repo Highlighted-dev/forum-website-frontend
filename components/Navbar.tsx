@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/navigation-menu";
 import { SignIn } from "./SignIn";
 import { Session } from "next-auth";
-import { SignOut } from "./SignOut";
 import { MenuIcon } from "lucide-react";
 import ProfileDropdown from "./profile/ProfileDropdown";
 
@@ -26,7 +25,7 @@ export default function NavBar({ session }: { session: Session | null }) {
     <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6 border-b">
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="lg:hidden">
+          <Button variant="outline" size="icon" className="lg:hidden p-1">
             <MenuIcon className="h-6 w-6" />
             <span className="sr-only">Toggle navigation menu</span>
           </Button>

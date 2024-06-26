@@ -70,7 +70,7 @@ export default async function Page() {
     <Suspense fallback={<MainPageLoading />}>
       <div className="flex min-h-screen w-full flex-col">
         <main className="flex-1">
-          <div className="container mx-auto grid grid-cols-1 gap-6 py-8 px-4 md:grid-cols-[1fr_460px] md:px-6">
+          <div className="container mx-auto grid grid-cols-1 gap-6 py-8 px-4 md:grid-cols-[1fr_420px] md:px-6">
             <ChatBox />
             <LatestDiscussions />
           </div>
@@ -80,10 +80,13 @@ export default async function Page() {
             </h1>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {discussions?.map((discussion) => (
-                <Card key={discussion._id} className="grid grid-rows-5">
-                  <div className="row-span-4">
+                <Card
+                  key={discussion._id}
+                  className="sm:grid grid-rows-5 flex flex-col"
+                >
+                  <div className="row-span-4 flex flex-col">
                     <CardHeader>
-                      <div className="text-5xl font-bold text-ellipsis overflow-hidden lg:max-w-[550px] max-w-[300px] ">
+                      <div className="sm:text-5xl text-3xl font-bold text-ellipsis overflow-hidden ">
                         {discussion.title}
                       </div>
                     </CardHeader>

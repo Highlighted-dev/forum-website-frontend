@@ -78,15 +78,18 @@ export default async function ChatBox() {
     );
 
   return (
-    <Card>
+    <Card className=" max-w-[900px]">
       <CardHeader className="flex flex-row items-center justify-between p-6 border-b">
         <CardTitle>Chat</CardTitle>
         <ChatSettings />
       </CardHeader>
       <CardContent className="h-[300px] overflow-y-auto pt-3">
-        <div className="space-y-4">
+        <div className="flex flex-col space-y-4">
           {messages.map((message: IMessage) => (
-            <div className="flex items-start gap-4" key={message._id}>
+            <div
+              className="flex items-start justify-center gap-4"
+              key={message._id}
+            >
               <Avatar className="h-10 w-10 shrink-0 border">
                 <Image
                   src={message.user?.image || "/placeholder.svg"}
@@ -96,24 +99,27 @@ export default async function ChatBox() {
                 />
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
-              <div className="flex-1">
+              <div className="flex flex-col flex-1 items-start">
                 <div className="flex items-center justify-between ">
                   <div>
                     <Link
                       href={`/profile/${message.user?._id}` || "#"}
                       className={
-                        "hover:underline " + getRankColor(message.user?.role)
+                        "hover:underline text-xs sm:text-sm " +
+                        getRankColor(message.user?.role)
                       }
                       prefetch={false}
                     >
                       {message.user?.name}
                     </Link>
-                    <span className="ml-2 text-sm text-gray-400">
+                    <span className="ml-2 text-xs sm:text-sm text-gray-400">
                       {calculateTime(new Date(message.timestamp))}
                     </span>
                   </div>
                 </div>
-                <p className="mt-2 text-gray-400">{message.content}</p>
+                <p className="mt-2 text-gray-400 text-xs sm:text-sm overflow-hidden break-all">
+                  {message.content}
+                </p>
               </div>
             </div>
           ))}

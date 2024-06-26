@@ -39,20 +39,20 @@ const getLatestDiscussions = async () => {
 export default async function LatestDiscussions() {
   const discussions = await getLatestDiscussions();
   return (
-    <Card>
+    <Card className="flex flex-col overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between p-6 border-b">
         <CardTitle>Latest Discussions</CardTitle>
         <Link href="/discussions" prefetch={false}>
           <Button variant="ghost">View all</Button>
         </Link>
       </CardHeader>
-      <CardContent className="h-[440px] overflow-y-hidden space-y-4 pt-3 max-w-full overflow-x-hidden">
+      <CardContent className="h-[500px] space-y-6 pt-3 max-w-full overflow-x-hidden flex flex-col">
         {discussions?.map((discussion) => (
           <div
-            className="flex items-start justify-center gap-4"
+            className="flex flex-row items-start justify-center gap-4"
             key={discussion._id}
           >
-            <Avatar className="h-16 w-16 shrink-0 border">
+            <Avatar className="sm:h-16 sm:w-16 h-10 w-10 shrink-0 border">
               <Image
                 src={discussion.user?.image || "/placeholder.svg"}
                 alt="Avatar"
@@ -62,37 +62,38 @@ export default async function LatestDiscussions() {
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>
             <div className="flex flex-col flex-1 justify-center ">
-              <div className="flex items-center">
+              <Link
+                href={`/discussions/${discussion._id}`}
+                className="text-sm font-medium hover:underline text-ellipsis overflow-hidden "
+                prefetch={false}
+              >
+                {discussion.title}
+              </Link>
+              <div>
+                <Link
+                  href={`/discussions/category/${discussion.category}`}
+                  className="text-xs text-gray-500"
+                >
+                  {discussion.category}
+                </Link>
+              </div>
+              <div className="flex items-center ">
                 <Link
                   href={`/profile/${discussion.user?._id}`}
                   className={`font-medium ${getRankColor(
                     discussion.user?.role || ""
-                  )} hover:underline`}
+                  )} hover:underline text-xs sm:text-sm`}
                   prefetch={false}
                 >
                   {discussion.user?.name}
                 </Link>
-                <Link
-                  href={`/discussions/category/${discussion.category}`}
-                  className="ml-2 text-sm text-gray-500"
-                >
-                  in <Badge>{discussion.category || ""}</Badge>
-                </Link>
-              </div>
-              <div className="mt-[-4px]">
-                <span className=" text-xs text-gray-400">
+                <span className=" ml-2 text-xs sm:text-sm text-center text-gray-400">
                   {calculateTime(new Date(discussion.createdAt))}
                 </span>
               </div>
-              <Link
-                href={`/discussions/${discussion._id}`}
-                className="text-base font-medium hover:underline"
-                prefetch={false}
-              >
-                {discussion.title.length > 30
-                  ? discussion.title.slice(0, 30) + "..."
-                  : discussion.title}
-              </Link>
+            </div>
+            <div>
+              <Badge>{discussion.answers.length} replies</Badge>
             </div>
           </div>
         ))}
