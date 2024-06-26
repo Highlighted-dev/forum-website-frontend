@@ -18,6 +18,10 @@ export default function NavBar({ session }: { session: Session | null }) {
     { href: "/discussions", label: "Discussions" },
     { href: "/servers", label: "Servers" },
   ];
+  const mobileLinks = [
+    { href: "/tos", label: "Terms of Service" },
+    { href: "/privacy", label: "Privacy Policy" },
+  ];
   return (
     <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6 border-b">
       <Sheet>
@@ -34,6 +38,16 @@ export default function NavBar({ session }: { session: Session | null }) {
           </Link>
           <div className="grid gap-2 py-6">
             {links.map((link) => (
+              <Link
+                href={link.href}
+                className="flex w-full items-center py-2 text-lg font-semibold"
+                prefetch={false}
+                key={link.label}
+              >
+                {link.label}
+              </Link>
+            ))}
+            {mobileLinks.map((link) => (
               <Link
                 href={link.href}
                 className="flex w-full items-center py-2 text-lg font-semibold"

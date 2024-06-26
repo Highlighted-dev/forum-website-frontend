@@ -141,7 +141,9 @@ export default function Discussions({
           <Card key={discussion._id}>
             <CardHeader>
               <Link href={`/discussions/${discussion._id}`}>
-                <CardTitle>{discussion.title}</CardTitle>
+                <div className="text-5xl font-bold text-ellipsis overflow-hidden 2xl:max-w-[1400px] lg:max-w-[1000px] md:max-w-[700px] sm:max-w-[600px] max-w-[300px] ">
+                  {discussion.title}
+                </div>
               </Link>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <Badge>{discussion.category}</Badge>
@@ -161,7 +163,7 @@ export default function Discussions({
             </CardHeader>
             <CardContent>
               <div
-                className="text-gray-700 dark:text-gray-400"
+                className="text-gray-400 text-ellipsis overflow-hidden 2xl:max-w-[1400px] lg:max-w-[1000px] md:max-w-[700px] sm:max-w-[600px] max-w-[300px] "
                 dangerouslySetInnerHTML={sanitizedHTML(discussion)}
               />
             </CardContent>

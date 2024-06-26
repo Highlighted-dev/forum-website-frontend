@@ -83,13 +83,13 @@ export default async function Page() {
                 <Card key={discussion._id} className="grid grid-rows-5">
                   <div className="row-span-4">
                     <CardHeader>
-                      <CardTitle className="text-5xl font-bold">
+                      <div className="text-5xl font-bold text-ellipsis overflow-hidden lg:max-w-[550px] max-w-[300px] ">
                         {discussion.title}
-                      </CardTitle>
+                      </div>
                     </CardHeader>
                     <CardContent>
                       <div
-                        className="text-sm"
+                        className="text-sm "
                         dangerouslySetInnerHTML={{
                           __html: sanitizeHTML(discussion.content),
                         }}
