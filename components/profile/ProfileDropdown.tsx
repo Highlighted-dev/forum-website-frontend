@@ -37,11 +37,11 @@ export default function ProfileDropdown({
           </Link>
           <DropdownMenuItem disabled>
             <LuArrowBigRight className="mr-2 h-4 w-4" />
-            <span>Coming soon</span>
+            <span>Stats (coming soon)</span>
           </DropdownMenuItem>
           <DropdownMenuItem disabled>
             <LuArrowBigRight className="mr-2 h-4 w-4" />
-            <span>Coming soon</span>
+            <span>??? (coming soon)</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuItem>

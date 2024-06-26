@@ -32,11 +32,21 @@ export default function TOSPage() {
         </Label>
         <Label>
           <h3> 3. User Conduct</h3> As a user of Strefa Gier, you agree to the
-          following: - Respect other members of the community. - Do not post any
-          content that is abusive, hateful, discriminatory, or violates any
-          laws. - Do not spam or post irrelevant content. - Do not share
-          personal information of others without their consent. - Do not engage
-          in any illegal activities on the Website.
+          following:
+          <ul className=" list-disc">
+            <li className="ml-6">Respect other members of the community. </li>
+            <li className="ml-6">
+              Do not post any content that is abusive, hateful, discriminatory,
+              or violates any laws.
+            </li>
+            <li className="ml-6">Do not spam or post irrelevant content. </li>
+            <li className="ml-6">
+              Do not share personal information of others without their consent.
+            </li>
+            <li className="ml-6">
+              Do not engage in any illegal activities on the Website.
+            </li>
+          </ul>
         </Label>
         <Label>
           <h3> 4. Content Ownership and Usage</h3> You retain ownership of any
