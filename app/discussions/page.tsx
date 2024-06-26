@@ -69,7 +69,7 @@ export default async function DiscussionsPage() {
           {latestDiscussions?.map((discussion) => (
             <Card
               key={discussion?._id}
-              className="grid grid-cols-5 min-h-[100px]"
+              className="sm:grid grid-cols-5 min-h-[100px] flex flex-col justify-center"
             >
               <CardHeader className="flex flex-col items-start justify-center lg:col-span-3 col-span-2">
                 <Link href={`/discussions/category/${discussion?.category}`}>
