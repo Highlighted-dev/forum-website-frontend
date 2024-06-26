@@ -49,7 +49,7 @@ export default function LockDiscussionForm({
         <Lock className="mr-1" />
       </Button>
     </form>
-  ) : (
+  ) : session?.user.role === "Ekipa TTT" ? (
     <form
       className="flex justify-end items-end"
       onSubmit={handleSubmit(onSubmit)}
@@ -62,5 +62,5 @@ export default function LockDiscussionForm({
         <Unlock className="mr-1" />
       </Button>
     </form>
-  );
+  ) : null;
 }
