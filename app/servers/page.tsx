@@ -17,7 +17,7 @@ export default function page() {
               href="https://www.gametracker.com/server_info/130.162.230.182:27015/"
               target="_blank"
             >
-              <Image
+              <img
                 src="https://cache.gametracker.com/server_info/130.162.230.182:27015/b_350_20_681212_280b0b_fef2f2_000000.png"
                 width="350"
                 height="20"

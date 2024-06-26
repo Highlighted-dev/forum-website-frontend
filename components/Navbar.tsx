@@ -10,6 +10,7 @@ import { SignIn } from "./SignIn";
 import { Session } from "next-auth";
 import { MenuIcon } from "lucide-react";
 import ProfileDropdown from "./profile/ProfileDropdown";
+import Image from "next/image";
 
 export default function NavBar({ session }: { session: Session | null }) {
   const links = [
@@ -32,7 +33,12 @@ export default function NavBar({ session }: { session: Session | null }) {
         </SheetTrigger>
         <SheetContent side="left">
           <Link href="#" prefetch={false}>
-            <img src="/strefagier.svg" alt="StrefaGier" className="h-12 w-12" />
+            <Image
+              src="/strefagier.svg"
+              alt="StrefaGier"
+              width={48}
+              height={48}
+            />
             <span className="sr-only">StrefaGier</span>
           </Link>
           <div className="grid gap-2 py-6">
@@ -60,7 +66,7 @@ export default function NavBar({ session }: { session: Session | null }) {
         </SheetContent>
       </Sheet>
       <Link href="/" className="mr-6 hidden lg:flex" prefetch={false}>
-        <img src="/strefagier.svg" alt="StrefaGier" className="h-14 w-14" />
+        <Image src="/strefagier.svg" alt="StrefaGier" height={56} width={56} />
         <span className="sr-only">StrefaGier</span>
       </Link>
       <div className="flex w-full justify-center">
