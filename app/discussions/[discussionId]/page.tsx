@@ -1,8 +1,8 @@
 import { IDiscussion } from "@/@types/discussion";
 import { auth } from "@/auth";
 import { ReplyEditor } from "@/components/editor/ReplyEditor";
+import LockDiscussionForm from "@/components/LockDiscussionForm";
 import TooltipReactions from "@/components/reactions/TooltipReactions";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -77,6 +77,7 @@ export default async function DiscussionIdPage({
   return (
     <div className="h-full w-full py-12">
       <div className="container px-4 md:px-6 space-y-4">
+        <LockDiscussionForm discussion={discussion} session={session} />
         <Card>
           <CardHeader>
             <CardTitle className="text-5xl font-bold">
