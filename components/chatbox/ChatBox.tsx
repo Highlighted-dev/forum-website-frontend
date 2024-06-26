@@ -87,10 +87,10 @@ export default async function ChatBox() {
         <div className="flex flex-col space-y-4">
           {messages.map((message: IMessage) => (
             <div
-              className="flex items-start justify-center gap-4"
+              className="flex items-center justify-center gap-4"
               key={message._id}
             >
-              <Avatar className="h-10 w-10 shrink-0 border">
+              <Avatar className="h-10 w-10 shrink-0 border ">
                 <Image
                   src={message.user?.image || "/placeholder.svg"}
                   alt="Avatar"
