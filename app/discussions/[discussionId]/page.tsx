@@ -22,7 +22,8 @@ import React from "react";
 import { AiOutlineLike, AiOutlineHeart } from "react-icons/ai";
 import { LiaLaughSquintSolid, LiaMehSolid } from "react-icons/lia";
 import { PiSmileySad } from "react-icons/pi";
-const getDiscussion = async (id: string) => {
+
+const getDiscussion = async (id: string): Promise<IDiscussion | null> => {
   try {
     const res: Response = await fetch(
       getCurrentUrl() + `/externalApi/discussion/${id}`,
@@ -42,6 +43,35 @@ const getDiscussion = async (id: string) => {
     console.log(e);
     return null;
   }
+};
+
+interface ReactionCount {
+  icon: JSX.Element;
+  reaction: string;
+  count: number;
+}
+
+interface IReaction {
+  reaction: string;
+}
+
+const aggregateReactions = (reactionList: IReaction[]): ReactionCount[] => {
+  const reactions = [
+    { icon: <AiOutlineLike />, reaction: "like" },
+    { icon: <AiOutlineHeart />, reaction: "love" },
+    { icon: <LiaLaughSquintSolid />, reaction: "funny" },
+    { icon: <LiaMehSolid />, reaction: "cringe" },
+    { icon: <PiSmileySad />, reaction: "sad" },
+  ];
+
+  return reactions
+    .map((r) => {
+      const count = reactionList.filter(
+        (re) => re.reaction.toLowerCase() === r.reaction
+      ).length;
+      return count > 0 ? { ...r, count } : null;
+    })
+    .filter(Boolean) as ReactionCount[];
 };
 
 export default async function DiscussionIdPage({
@@ -67,13 +97,6 @@ export default async function DiscussionIdPage({
     return { __html: DOMPurify.sanitize(content) };
   };
 
-  const reactions = [
-    { icon: <AiOutlineLike />, reaction: "like" },
-    { icon: <AiOutlineHeart />, reaction: "love" },
-    { icon: <LiaLaughSquintSolid />, reaction: "funny" },
-    { icon: <LiaMehSolid />, reaction: "cringe" },
-    { icon: <PiSmileySad />, reaction: "sad" },
-  ];
   return (
     <div className="h-full w-full py-12">
       <div className="container px-4 md:px-6 space-y-4">
@@ -94,27 +117,15 @@ export default async function DiscussionIdPage({
           <CardFooter className="flex justify-between">
             <div className="flex flex-row gap-2">
               <TooltipReactions id={params.discussionId} session={session} />
-              {discussion.reactions?.map((reaction) => (
-                <div key={reaction._id} className="flex flex-row">
-                  {reactions.map((r) => {
-                    if (r.reaction === reaction.reaction.toLowerCase()) {
-                      return (
-                        <div
-                          className="flex flex-row items-center"
-                          key={r.reaction}
-                        >
-                          {r.icon}
-                          <Label className="text-sm text-gray-500 ml-1">
-                            {
-                              discussion.reactions?.filter(
-                                (re) => re.reaction.toLowerCase() === r.reaction
-                              ).length
-                            }
-                          </Label>
-                        </div>
-                      );
-                    }
-                  })}
+              {aggregateReactions(discussion.reactions).map((reaction) => (
+                <div
+                  className="flex flex-row items-center"
+                  key={reaction.reaction}
+                >
+                  {reaction.icon}
+                  <Label className="text-sm text-gray-500 ml-1">
+                    {reaction.count}
+                  </Label>
                 </div>
               ))}
             </div>
@@ -152,28 +163,15 @@ export default async function DiscussionIdPage({
                   session={session}
                   answerId={answer._id}
                 />
-                {answer.reactions?.map((reaction) => (
-                  <div key={reaction._id} className="flex flex-row">
-                    {reactions.map((r) => {
-                      if (r.reaction === reaction.reaction.toLowerCase()) {
-                        return (
-                          <div
-                            className="flex flex-row items-center"
-                            key={r.reaction}
-                          >
-                            {r.icon}
-                            <Label className="text-sm text-gray-500 ml-1">
-                              {
-                                answer.reactions?.filter(
-                                  (re) =>
-                                    re.reaction.toLowerCase() === r.reaction
-                                ).length
-                              }
-                            </Label>
-                          </div>
-                        );
-                      }
-                    })}
+                {aggregateReactions(answer.reactions).map((reaction) => (
+                  <div
+                    className="flex flex-row items-center"
+                    key={reaction.reaction}
+                  >
+                    {reaction.icon}
+                    <Label className="text-sm text-gray-500 ml-1">
+                      {reaction.count}
+                    </Label>
                   </div>
                 ))}
               </div>
