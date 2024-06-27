@@ -82,7 +82,7 @@ export function DiscussionEditor({
         <EditorBase editor={editor} title={title} register={register} />
         <div className="flex w-full items-center justify-between relative">
           <div className="flex items-center space-x-10">
-            <Button variant={"ghost"}>
+            <Button variant={"ghost"} type={"button"}>
               <Link href="/">
                 <div className="flex items-center">
                   <FaChevronLeft className="mr-2 h-4 w-4" />
