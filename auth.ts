@@ -8,13 +8,23 @@ import { ObjectId } from "mongodb";
 const adapter = MongoDBAdapter(clientPromise);
 
 async function addAdditionalFields(user: User) {
-  const db = (await clientPromise).db();
-  await db
-    .collection("users")
-    .updateOne(
-      { _id: new ObjectId(user.id) },
-      { $set: { createdAt: new Date(), role: "user" } }
-    );
+  try {
+    const db = (await clientPromise).db();
+    const hex = user.id!.replace(/-/g, "");
+    const buffer = Buffer.from(hex, "hex");
+
+    // Convert the buffer to an ObjectId
+    const objectId = new ObjectId(buffer.slice(0, 12));
+
+    await db
+      .collection("users")
+      .updateOne(
+        { _id: objectId },
+        { $set: { createdAt: new Date(), role: "user" } }
+      );
+  } catch (error) {
+    console.error("Error adding additional fields:", error);
+  }
 }
 
 export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
@@ -29,6 +39,9 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
     },
     async jwt({ token, user, trigger, session }) {
       if (user) {
+        if (!user.createdAt) {
+          await addAdditionalFields(user);
+        }
         token.user = user;
       }
       if (trigger === "update" && session) {
@@ -36,13 +49,6 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         return token;
       }
       return token;
-    },
-    async signIn({ user, account, profile, email, credentials }) {
-      // Add the createdAt field only if the user is new
-      if (user.createdAt === undefined) {
-        await addAdditionalFields(user);
-      }
-      return true;
     },
   },
 });
