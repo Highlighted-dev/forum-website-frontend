@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { ReplyEditor } from "@/components/editor/ReplyEditor";
 import LockDiscussionForm from "@/components/LockDiscussionForm";
 import TooltipReactions from "@/components/reactions/TooltipReactions";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -45,6 +46,25 @@ const getDiscussion = async (id: string): Promise<IDiscussion | null> => {
   }
 };
 
+const getUser = async (userId: string) => {
+  try {
+    const response = await fetch(
+      getCurrentUrl() + `/externalApi/user/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "x-api-key": process.env.API_KEY_TOKEN!,
+        },
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
 interface ReactionCount {
   icon: JSX.Element;
   reaction: string;
@@ -74,6 +94,14 @@ const aggregateReactions = (reactionList: IReaction[]): ReactionCount[] => {
     .filter(Boolean) as ReactionCount[];
 };
 
+const formatDateTime = (date: string) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 export default async function DiscussionIdPage({
   params,
 }: {
@@ -81,6 +109,14 @@ export default async function DiscussionIdPage({
 }) {
   const session = await auth();
   const discussion = await getDiscussion(params.discussionId);
+  // get all user ids from discussion and answers
+  const userIds = [
+    discussion?.user._id,
+    ...(discussion?.answers || []).map((answer) => answer.user._id),
+  ];
+  // get the user data for each user id
+  const users = await Promise.all(userIds.map((id) => getUser(id || "")));
+
   if (!discussion)
     return (
       <div className="h-full w-full py-12">
@@ -101,69 +137,63 @@ export default async function DiscussionIdPage({
     <div className="h-full w-full py-12">
       <div className="container px-4 md:px-6 space-y-4">
         <LockDiscussionForm discussion={discussion} session={session} />
-        <Card className="flex flex-col">
-          <CardHeader>
-            <CardTitle className="sm:text-5xl text-3xl font-bold text-ellipsis overflow-hidden">
-              {discussion.title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div
-              className="text-ellipsis overflow-hidden"
-              dangerouslySetInnerHTML={sanitizedHTML(discussion.content)}
-              id={"editor"}
-            />
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <div className="flex flex-row gap-2">
-              <TooltipReactions id={params.discussionId} session={session} />
-              {aggregateReactions(discussion.reactions).map((reaction) => (
-                <div
-                  className="flex flex-row items-center"
-                  key={reaction.reaction}
-                >
-                  {reaction.icon}
-                  <Label className="text-sm text-gray-500 ml-1">
-                    {reaction.count}
-                  </Label>
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-row justify-center items-center text-sm text-gray-500">
+        <Card className="md:grid md:grid-cols-7 lg:grid-cols-6 flex flex-col">
+          <div className="flex flex-col justify-start items-center lg:col-span-1 col-span-2 md:border-r border-b md:pb-0 ">
+            <div className="flex flex-col justify-center items-center text-sm mt-8">
               <Image
                 src={discussion.user.image || "/placeholder.svg"}
-                className="rounded-full mr-1"
+                className=" rounded-md"
                 alt="Avatar"
-                width={30}
-                height={30}
+                width={100}
+                height={100}
               />
               <Link
-                className={`text-sm ${getRankColor(
+                className={`text-lg font-bold mt-1 ${getRankColor(
                   discussion?.user.role || ""
                 )}`}
                 href={`/profile/${discussion.user._id}`}
               >
                 {discussion.user.name}
               </Link>
+              <Badge
+                className={`mt-1 p-2 rounded-lg ${getRankColor(
+                  discussion.user.role
+                )} bg-secondary hover:bg-stone-900`}
+              >
+                {discussion.user.role ? discussion.user.role : "User"}
+              </Badge>
+              <Label className="mt-2 text-xs text-gray-500">
+                {users.find((u) => u._id === discussion.user._id)
+                  ?.numberOfDiscussions +
+                  users.find((u) => u._id === discussion.user._id)
+                    ?.numberOfReplies || 0}{" "}
+                posts
+              </Label>
+              <Label className="text-sm text-gray-400 pb-4">
+                Joined (Coming soon){" "}
+                {/* {formatDateTime(
+                  users.find((u) => u._id === discussion.user._id)?.createdAt
+                )} */}
+              </Label>
             </div>
-          </CardFooter>
-        </Card>
-        {discussion.answers?.map((answer) => (
-          <Card key={answer._id}>
-            <CardContent className="mt-4">
+          </div>
+          <div className="col-span-5">
+            <CardHeader>
+              <CardTitle className="sm:text-5xl text-3xl font-bold text-ellipsis overflow-hidden">
+                {discussion.title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div
-                dangerouslySetInnerHTML={sanitizedHTML(answer.content)}
+                className="text-ellipsis overflow-hidden"
+                dangerouslySetInnerHTML={sanitizedHTML(discussion.content)}
                 id={"editor"}
               />
             </CardContent>
             <CardFooter className="flex justify-between">
               <div className="flex flex-row gap-2">
-                <TooltipReactions
-                  id={params.discussionId}
-                  session={session}
-                  answerId={answer._id}
-                />
-                {aggregateReactions(answer.reactions).map((reaction) => (
+                <TooltipReactions id={params.discussionId} session={session} />
+                {aggregateReactions(discussion.reactions).map((reaction) => (
                   <div
                     className="flex flex-row items-center"
                     key={reaction.reaction}
@@ -175,24 +205,81 @@ export default async function DiscussionIdPage({
                   </div>
                 ))}
               </div>
-              <div className="flex flex-row justify-center items-center text-sm text-gray-500">
+            </CardFooter>
+          </div>
+        </Card>
+        {discussion.answers?.map((answer) => (
+          <Card
+            className="md:grid md:grid-cols-7 lg:grid-cols-6 flex flex-col"
+            key={answer._id}
+          >
+            <div className="flex flex-col justify-start items-center lg:col-span-1 col-span-2 md:border-r border-b md:pb-0 ">
+              <div className="flex flex-col justify-center items-center text-sm mt-8">
                 <Image
                   src={answer.user.image || "/placeholder.svg"}
-                  className="rounded-full mr-1"
+                  className=" rounded-md"
                   alt="Avatar"
-                  width={30}
-                  height={30}
+                  width={100}
+                  height={100}
                 />
                 <Link
-                  className={`text-sm ${getRankColor(
-                    discussion?.user.role || ""
+                  className={`text-lg font-bold mt-1 ${getRankColor(
+                    answer?.user.role || ""
                   )}`}
                   href={`/profile/${answer.user._id}`}
                 >
                   {answer.user.name}
                 </Link>
+                <Badge
+                  className={`mt-1 p-2 rounded-lg ${getRankColor(
+                    answer.user.role
+                  )} bg-secondary hover:bg-stone-900`}
+                >
+                  {answer.user.role ? answer.user.role : "User"}
+                </Badge>
+                <Label className="mt-2 text-xs text-gray-500">
+                  {users.find((u) => u._id === answer.user._id)
+                    ?.numberOfDiscussions +
+                    users.find((u) => u._id === answer.user._id)
+                      ?.numberOfReplies || 0}{" "}
+                  posts
+                </Label>
+                <Label className="text-sm text-gray-400 pb-4">
+                  Joined (Coming soon){" "}
+                  {/* {formatDateTime(
+                    users.find((u) => u._id === answer.user._id)?.createdAt
+                  )} */}
+                </Label>
               </div>
-            </CardFooter>
+            </div>
+            <div className="col-span-5">
+              <CardContent className="mt-4">
+                <div
+                  dangerouslySetInnerHTML={sanitizedHTML(answer.content)}
+                  id={"editor"}
+                />
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <div className="flex flex-row gap-2">
+                  <TooltipReactions
+                    id={params.discussionId}
+                    session={session}
+                    answerId={answer._id}
+                  />
+                  {aggregateReactions(answer.reactions).map((reaction) => (
+                    <div
+                      className="flex flex-row items-center"
+                      key={reaction.reaction}
+                    >
+                      {reaction.icon}
+                      <Label className="text-sm text-gray-500 ml-1">
+                        {reaction.count}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </CardFooter>
+            </div>
           </Card>
         ))}
         {discussion.closed ? (
