@@ -170,10 +170,10 @@ export default async function DiscussionIdPage({
                 posts
               </Label>
               <Label className="text-sm text-gray-400 pb-4">
-                Joined (Coming soon){" "}
-                {/* {formatDateTime(
+                Joined{" "}
+                {formatDateTime(
                   users.find((u) => u._id === discussion.user._id)?.createdAt
-                )} */}
+                )}
               </Label>
             </div>
           </div>
@@ -245,10 +245,10 @@ export default async function DiscussionIdPage({
                   posts
                 </Label>
                 <Label className="text-sm text-gray-400 pb-4">
-                  Joined (Coming soon){" "}
-                  {/* {formatDateTime(
+                  Joined{" "}
+                  {formatDateTime(
                     users.find((u) => u._id === answer.user._id)?.createdAt
-                  )} */}
+                  )}
                 </Label>
               </div>
             </div>

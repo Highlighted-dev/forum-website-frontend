@@ -13,6 +13,7 @@ declare module "next-auth" {
       role: string;
       bio: string;
       emailVerified: Date | null;
+      createdAt: Date;
     };
   }
   interface User extends IUser {}
@@ -26,4 +27,5 @@ export interface IUser {
   role: string;
   bio: string;
   emailVerified: Date | null;
+  createdAt: Date;
 }
