@@ -36,6 +36,7 @@ const getChatMessages = async () => {
       },
       cache: "no-store",
     });
+    if (!res.ok) throw new Error("Failed to fetch data");
 
     const data = (await res.json()) as IMessage[];
     if (data && data.length > 50) {

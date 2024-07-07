@@ -24,6 +24,7 @@ const getLatestDiscussions = async () => {
         cache: "no-store",
       }
     );
+    if (!res.ok) throw new Error("Failed to fetch data");
 
     const data = ((await res.json()) as IDiscussion[]).reverse();
     if (data && data.length > 5) {
