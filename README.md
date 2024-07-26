@@ -1,18 +1,14 @@
-# Strefa Gier
+# Forum website
 
-Welcome to Strefa Gier, a discussion forum dedicated to Garry's Mod servers.
+This project was made as a discussion forum dedicated to Garry's Mod servers. It is based on NextJS, ExpressJS and MongoDB.
 
 ## Table of Contents
 
-- [Introduction](#introduction)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
 - [License](#license)
 
-## Introduction
-
-Strefa Gier is a platform where users can discuss and share information about Garry's Mod servers. By accessing or using our Website, you agree to comply with and be bound by our [Terms of Service](app/tos/page.tsx).
 
 ## Features
 
