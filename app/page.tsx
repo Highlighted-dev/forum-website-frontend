@@ -27,13 +27,18 @@ const getDiscussions = async () => {
     if (!allDiscussions || allDiscussions.length === 0) {
       return [];
     }
-    allDiscussions.forEach((discussion) => {
+
+    const featuredDiscussions = allDiscussions.filter(
+      (discussion) => discussion.featured,
+    );
+
+    featuredDiscussions.forEach((discussion) => {
       discussion.content =
         discussion.content.length > 100
           ? discussion.content.substring(0, 100) + "<p>...</p>"
           : discussion.content;
     });
-    return allDiscussions;
+    return featuredDiscussions;
   } catch (e) {
     console.log(e);
     return null;
