@@ -1,35 +1,26 @@
-import { IDiscussion } from "@/@types/discussion";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { getCurrentUrl } from "@/utils/getCurrentUrl";
-import Link from "next/link";
-import React, { Suspense } from "react";
-import DiscussionsLoading from "./discussionsLoading";
-import { getRankColor } from "@/utils/rankColors";
 import Image from "next/image";
+import Link from "next/link";
+import { Suspense } from "react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { db } from "@/db";
+import { getRankColor } from "@/utils/rankColors";
+import DiscussionsLoading from "./discussionsLoading";
 
 const getDiscussions = async () => {
   try {
-    const res: Response = await fetch(
-      getCurrentUrl() + `/externalApi/discussion`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.API_KEY_TOKEN!,
+    const allDiscussions = await db.query.discussions.findMany({
+      with: {
+        user: {
+          with: {
+            answers: true,
+            discussions: true,
+          },
         },
-        cache: "no-store",
-      }
-    );
-    const data = (await res.json()) as IDiscussion[];
-    return data;
+      },
+    });
+    return allDiscussions;
   } catch (e) {
     console.log(e);
     return null;
@@ -41,19 +32,19 @@ export default async function DiscussionsPage() {
 
   // Sort discussions by creationDate in descending order
   const sortedDiscussions = discussions?.sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
   // Get unique categories from sorted discussions
   const categories = sortedDiscussions?.map(
-    (discussion) => discussion.category
+    (discussion) => discussion.category,
   );
   const uniqueCategories = [...new Set(categories)];
 
   // Get the latest discussion for each category
   const latestDiscussions = uniqueCategories.map((category) => {
     return sortedDiscussions?.find(
-      (discussion) => discussion.category === category
+      (discussion) => discussion.category === category,
     );
   });
 
@@ -68,7 +59,7 @@ export default async function DiscussionsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {latestDiscussions?.map((discussion) => (
             <Card
-              key={discussion?._id}
+              key={discussion?.id}
               className="sm:grid grid-cols-5 min-h-[100px] flex flex-col justify-center"
             >
               <CardHeader className="flex flex-col items-start justify-center lg:col-span-3 col-span-2">
@@ -83,7 +74,7 @@ export default async function DiscussionsPage() {
                   <Label className="text-xl">
                     {
                       discussions?.filter(
-                        (d) => d.category === discussion?.category
+                        (d) => d.category === discussion?.category,
                       ).length
                     }
                   </Label>
@@ -102,7 +93,7 @@ export default async function DiscussionsPage() {
                     </Avatar>
                   </div>
                   <div className="flex flex-col">
-                    <Link href={`/discussions/${discussion?._id}`}>
+                    <Link href={`/discussions/${discussion?.id}`}>
                       <p>
                         {discussion?.title.length! > 45
                           ? discussion?.title.slice(0, 45) + "..."
@@ -111,9 +102,9 @@ export default async function DiscussionsPage() {
                     </Link>
                     <Link
                       className={`text-sm ${getRankColor(
-                        discussion?.user.role || ""
+                        discussion?.user.role || "",
                       )}`}
-                      href={`/profile/${discussion?.user._id}`}
+                      href={`/profile/${discussion?.user.id}`}
                     >
                       {discussion?.user.name}
                     </Link>

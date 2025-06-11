@@ -1,31 +1,31 @@
-import { IDiscussion } from "@/@types/discussion";
+import { eq } from "drizzle-orm";
 import Discussions from "@/components/Discusssions";
-import { getCurrentUrl } from "@/utils/getCurrentUrl";
-import React from "react";
+import { db } from "@/db";
+import { discussions } from "@/db/schema";
 
 const getDiscussions = async (category: string) => {
   try {
-    const res: Response = await fetch(
-      getCurrentUrl() + `/externalApi/discussion/category/${category}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.API_KEY_TOKEN!,
+    const allDiscussions = await db.query.discussions.findMany({
+      where: eq(discussions.category, category),
+      with: {
+        user: {
+          with: {
+            answers: true,
+            discussions: true,
+          },
         },
-        cache: "no-store",
-      }
-    );
-    const data = (await res.json()) as IDiscussion[];
+      },
+    });
+
     // Now substring the content to only show the first 100 characters. Also if the content is too long, add "..." at the end.
-    data.forEach((discussion) => {
+    allDiscussions.forEach((discussion) => {
       discussion.content =
         discussion.content.length > 300
           ? discussion.content.substring(0, 600) + "..."
           : discussion.content;
       console.log(discussion.content);
     });
-    return data;
+    return allDiscussions;
   } catch (e) {
     console.log(e);
     return null;
@@ -37,9 +37,11 @@ export default async function CategoryPage({
   params,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }) {
-  if (!params.category) {
+  const _params = await params;
+  const _searchParams = await searchParams;
+  if (!_params.category) {
     return (
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between">
@@ -48,7 +50,7 @@ export default async function CategoryPage({
       </div>
     );
   }
-  let discussions = await getDiscussions(params.category);
+  let discussions = await getDiscussions(_params.category);
 
   if (discussions) {
     //sort discussions by pinned
@@ -62,7 +64,7 @@ export default async function CategoryPage({
       return 0;
     });
   }
-  const page = searchParams["page"] ?? "1";
+  const page = _searchParams.page ?? "1";
   const start = (Number(page) - 1) * 5;
   const end = start + 5;
   const slicedDiscussions = discussions?.slice(start, end);
@@ -76,7 +78,7 @@ export default async function CategoryPage({
       discussions={slicedDiscussions}
       hasNextPage={hasNextPage}
       hasPreviousPage={hasPreviousPage}
-      category={params.category}
+      category={_params.category}
       totalPages={totalPages}
     />
   );

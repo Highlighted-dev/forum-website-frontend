@@ -1,12 +1,11 @@
 "use client";
-import React from "react";
+import { getCookie, setCookie } from "cookies-next";
+import { SettingsIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
-import { Button } from "../ui/button";
-import { SettingsIcon } from "lucide-react";
-import { getCookie, setCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
 export default function ChatSettings() {
   const router = useRouter();
   return (

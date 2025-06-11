@@ -1,4 +1,16 @@
-import React from "react";
+import { getCookie } from "cookies-next";
+import dotenv from "dotenv";
+import { SettingsIcon } from "lucide-react";
+import { cookies } from "next/headers";
+import Image from "next/image";
+import Link from "next/link";
+import { FaWindows } from "react-icons/fa";
+import { auth } from "@/auth";
+import { db } from "@/db";
+import { calculateTime } from "@/utils/calculateTime";
+import { getRankColor } from "@/utils/rankColors";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -7,44 +19,32 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback } from "../ui/avatar";
-import Link from "next/link";
-import { SettingsIcon } from "lucide-react";
-import { auth } from "@/auth";
 import ChatBoxForm from "./ChatBoxForm";
-import { getCurrentUrl } from "@/utils/getCurrentUrl";
-import { IMessage } from "@/@types/message";
-import dotenv from "dotenv";
-import Image from "next/image";
-import { calculateTime } from "@/utils/calculateTime";
-import { FaWindows } from "react-icons/fa";
 import ChatSettings from "./ChatSettings";
-import { getCookie, getCookies } from "cookies-next";
-import { cookies } from "next/headers";
-import { getRankColor } from "@/utils/rankColors";
 
 dotenv.config();
 
 const getChatMessages = async () => {
   try {
-    const res: Response = await fetch(getCurrentUrl() + "/externalApi/chat", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.API_KEY_TOKEN!,
+    const allMessages = await db.query.messages.findMany({
+      with: {
+        user: {
+          with: {
+            answers: true,
+            discussions: true,
+          },
+        },
       },
-      cache: "no-store",
+      orderBy: (messages, { desc }) => [desc(messages.timestamp)],
     });
-    if (!res.ok) throw new Error("Failed to fetch data");
+    if (!allMessages) throw new Error("Failed to fetch data");
 
-    const data = (await res.json()) as IMessage[];
-    if (data && data.length > 50) {
-      const messages = data.slice(0, 50);
+    if (allMessages && allMessages.length > 50) {
+      const messages = allMessages.slice(0, 50);
       messages.reverse();
       return messages;
     }
-    return data.reverse();
+    return allMessages.reverse();
   } catch (e) {
     console.log(e);
     return null;
@@ -86,10 +86,10 @@ export default async function ChatBox() {
       </CardHeader>
       <CardContent className="h-[300px] overflow-y-auto pt-3">
         <div className="flex flex-col space-y-4">
-          {messages.map((message: IMessage) => (
+          {messages.map((message) => (
             <div
               className="flex items-center justify-center gap-4"
-              key={message._id}
+              key={message.id}
             >
               <Avatar className="h-10 w-10 shrink-0 border ">
                 <Image
@@ -104,10 +104,10 @@ export default async function ChatBox() {
                 <div className="flex items-center justify-between ">
                   <div>
                     <Link
-                      href={`/profile/${message.user?._id}` || "#"}
+                      href={`/profile/${message.user?.id}` || "#"}
                       className={
                         "hover:underline text-xs sm:text-sm " +
-                        getRankColor(message.user?.role)
+                        getRankColor(message.user?.role || "")
                       }
                       prefetch={false}
                     >

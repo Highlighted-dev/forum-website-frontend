@@ -1,11 +1,5 @@
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import React from "react";
 
 export default function ProfileLoading() {
   return (
@@ -32,17 +26,17 @@ export default function ProfileLoading() {
           <Card>
             <CardHeader>
               <CardTitle> Posts</CardTitle>
-              <CardDescription>
+              <div>
                 <Skeleton className="w-24 h-4" />
-              </CardDescription>
+              </div>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader>
               <CardTitle>Role</CardTitle>
-              <CardDescription className="mx-2">
+              <div className="mx-2">
                 <Skeleton className="w-24 h-4" />
-              </CardDescription>
+              </div>
             </CardHeader>
           </Card>
         </div>

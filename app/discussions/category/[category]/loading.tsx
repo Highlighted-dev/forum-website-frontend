@@ -1,3 +1,5 @@
+import { Badge } from "lucide-react";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -7,9 +9,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "lucide-react";
-import Link from "next/link";
-import React from "react";
 
 export default function CategoryLoading() {
   return (

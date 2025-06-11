@@ -1,14 +1,17 @@
 "use server";
 
-import { getCurrentUrl } from "@/utils/getCurrentUrl";
-import { Session } from "next-auth";
 import dotenv from "dotenv";
+import { eq } from "drizzle-orm";
+import { Session } from "next-auth";
+import { db } from "@/db";
+import { discussions } from "@/db/schema";
+
 dotenv.config();
 
 export async function lockDiscussion(
   closing: string,
-  _id: string,
-  session: Session | null
+  id: number,
+  session: Session | null,
 ) {
   if (!session) {
     return {
@@ -16,23 +19,18 @@ export async function lockDiscussion(
       message: "You must be logged in to send a message",
     };
   }
-  const res = await fetch(getCurrentUrl() + `/externalApi/discussion/${_id}`, {
-    method: "PUT",
-    body: JSON.stringify({
-      closing: closing,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": process.env.API_KEY_TOKEN!,
-    },
-  });
-  if (!res.ok) {
-    const data = await res.json();
+
+  if (!closing || (closing !== "true" && closing !== "false")) {
     return {
-      status: "Error",
-      message: data.error,
+      status: "error",
+      message: "Invalid closing value. It must be 'true' or 'false'.",
     };
   }
+
+  await db
+    .update(discussions)
+    .set({ closed: closing === "true" })
+    .where(eq(discussions.id, id));
 
   return {
     status: "Success",

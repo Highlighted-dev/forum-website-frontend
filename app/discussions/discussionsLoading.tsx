@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import React from "react";
 
 export default function DiscussionsLoading() {
   return (
@@ -13,7 +12,7 @@ export default function DiscussionsLoading() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-          <Card key={i} className="grid grid-cols-5 min-h-[100px]">
+          <Card key={i + 10} className="grid grid-cols-5 min-h-[100px]">
             <CardHeader className="flex flex-col items-start justify-center lg:col-span-3 col-span-2">
               <Skeleton className="h-8 w-32" />
             </CardHeader>

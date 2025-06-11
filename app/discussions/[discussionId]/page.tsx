@@ -1,4 +1,12 @@
-import { IDiscussion } from "@/@types/discussion";
+import { eq } from "drizzle-orm";
+import DOMPurify from "isomorphic-dompurify";
+import { Lock } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { JSX } from "react";
+import { AiOutlineHeart, AiOutlineLike } from "react-icons/ai";
+import { LiaLaughSquintSolid, LiaMehSolid } from "react-icons/lia";
+import { PiSmileySad } from "react-icons/pi";
 import { auth } from "@/auth";
 import { ReplyEditor } from "@/components/editor/ReplyEditor";
 import LockDiscussionForm from "@/components/LockDiscussionForm";
@@ -13,52 +21,39 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { getCurrentUrl } from "@/utils/getCurrentUrl";
+import { db } from "@/db";
+import { discussions } from "@/db/schema";
 import { getRankColor } from "@/utils/rankColors";
-import DOMPurify from "isomorphic-dompurify";
-import { Lock } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-import { AiOutlineLike, AiOutlineHeart } from "react-icons/ai";
-import { LiaLaughSquintSolid, LiaMehSolid } from "react-icons/lia";
-import { PiSmileySad } from "react-icons/pi";
 
-const getDiscussion = async (id: string): Promise<IDiscussion | null> => {
+const getDiscussion = async (id: number) => {
   try {
-    const res: Response = await fetch(
-      getCurrentUrl() + `/externalApi/discussion/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.API_KEY_TOKEN!,
+    const discussion = await db?.query.discussions.findFirst({
+      where: eq(discussions.id, Number(id)),
+      with: {
+        user: {
+          with: {
+            answers: true,
+            discussions: true,
+          },
         },
-        cache: "no-store",
-      }
-    );
-
-    const data = (await res.json()) as IDiscussion;
-    return data;
-  } catch (e) {
-    console.log(e);
-    return null;
-  }
-};
-
-const getUser = async (userId: string) => {
-  try {
-    const response = await fetch(
-      getCurrentUrl() + `/externalApi/user/${userId}`,
-      {
-        method: "GET",
-        headers: {
-          "x-api-key": process.env.API_KEY_TOKEN!,
+        answers: {
+          with: {
+            user: {
+              with: {
+                answers: true,
+                discussions: true,
+              },
+            },
+            reactions: true,
+          },
         },
-      }
-    );
-    const data = await response.json();
-    return data;
+        reactions: true,
+      },
+    });
+    if (!discussion) {
+      return null;
+    }
+    return discussion;
   } catch (e) {
     console.log(e);
     return null;
@@ -87,7 +82,7 @@ const aggregateReactions = (reactionList: IReaction[]): ReactionCount[] => {
   return reactions
     .map((r) => {
       const count = reactionList.filter(
-        (re) => re.reaction.toLowerCase() === r.reaction
+        (re) => re.reaction.toLowerCase() === r.reaction,
       ).length;
       return count > 0 ? { ...r, count } : null;
     })
@@ -105,17 +100,10 @@ const formatDateTime = (date: string) => {
 export default async function DiscussionIdPage({
   params,
 }: {
-  params: { discussionId: string };
+  params: Promise<{ discussionId: number }>;
 }) {
   const session = await auth();
-  const discussion = await getDiscussion(params.discussionId);
-  // get all user ids from discussion and answers
-  const userIds = [
-    discussion?.user._id,
-    ...(discussion?.answers || []).map((answer) => answer.user._id),
-  ];
-  // get the user data for each user id
-  const users = await Promise.all(userIds.map((id) => getUser(id || "")));
+  const discussion = await getDiscussion((await params).discussionId);
 
   if (!discussion)
     return (
@@ -149,30 +137,28 @@ export default async function DiscussionIdPage({
               />
               <Link
                 className={`text-lg font-bold mt-1 ${getRankColor(
-                  discussion?.user.role || ""
+                  discussion?.user.role || "",
                 )}`}
-                href={`/profile/${discussion.user._id}`}
+                href={`/profile/${discussion.user.id}`}
               >
                 {discussion.user.name}
               </Link>
               <Badge
                 className={`mt-1 p-2 rounded-lg ${getRankColor(
-                  discussion.user.role
+                  discussion.user.role || "",
                 )} bg-secondary hover:bg-stone-900`}
               >
                 {discussion.user.role ? discussion.user.role : "User"}
               </Badge>
               <Label className="mt-2 text-xs text-gray-500">
-                {users.find((u) => u._id === discussion.user._id)
-                  ?.numberOfDiscussions +
-                  users.find((u) => u._id === discussion.user._id)
-                    ?.numberOfReplies || 0}{" "}
+                {discussion.user?.discussions?.length +
+                  discussion.user?.answers?.length || 0}{" "}
                 posts
               </Label>
               <Label className="text-sm text-gray-400 pb-4">
                 Joined{" "}
                 {formatDateTime(
-                  users.find((u) => u._id === discussion.user._id)?.createdAt
+                  new Date(discussion.user.createdAt).toISOString(),
                 )}
               </Label>
             </div>
@@ -192,7 +178,10 @@ export default async function DiscussionIdPage({
             </CardContent>
             <CardFooter className="flex justify-between">
               <div className="flex flex-row gap-2">
-                <TooltipReactions id={params.discussionId} session={session} />
+                <TooltipReactions
+                  id={(await params).discussionId}
+                  session={session}
+                />
                 {aggregateReactions(discussion.reactions).map((reaction) => (
                   <div
                     className="flex flex-row items-center"
@@ -208,10 +197,10 @@ export default async function DiscussionIdPage({
             </CardFooter>
           </div>
         </Card>
-        {discussion.answers?.map((answer) => (
+        {discussion.answers?.map(async (answer) => (
           <Card
             className="md:grid md:grid-cols-7 lg:grid-cols-6 flex flex-col"
-            key={answer._id}
+            key={answer.id}
           >
             <div className="flex flex-col justify-start items-center lg:col-span-1 col-span-2 md:border-r border-b md:pb-0 ">
               <div className="flex flex-col justify-center items-center text-sm mt-8">
@@ -224,30 +213,28 @@ export default async function DiscussionIdPage({
                 />
                 <Link
                   className={`text-lg font-bold mt-1 ${getRankColor(
-                    answer?.user.role || ""
+                    answer?.user.role || "",
                   )}`}
-                  href={`/profile/${answer.user._id}`}
+                  href={`/profile/${answer.user.id}`}
                 >
                   {answer.user.name}
                 </Link>
                 <Badge
                   className={`mt-1 p-2 rounded-lg ${getRankColor(
-                    answer.user.role
+                    answer.user.role || "",
                   )} bg-secondary hover:bg-stone-900`}
                 >
                   {answer.user.role ? answer.user.role : "User"}
                 </Badge>
                 <Label className="mt-2 text-xs text-gray-500">
-                  {users.find((u) => u._id === answer.user._id)
-                    ?.numberOfDiscussions +
-                    users.find((u) => u._id === answer.user._id)
-                      ?.numberOfReplies || 0}{" "}
+                  {answer.user?.discussions?.length +
+                    answer.user?.answers?.length || 0}{" "}
                   posts
                 </Label>
                 <Label className="text-sm text-gray-400 pb-4">
                   Joined{" "}
                   {formatDateTime(
-                    users.find((u) => u._id === answer.user._id)?.createdAt
+                    new Date(answer.user.createdAt).toISOString(),
                   )}
                 </Label>
               </div>
@@ -262,9 +249,9 @@ export default async function DiscussionIdPage({
               <CardFooter className="flex justify-between">
                 <div className="flex flex-row gap-2">
                   <TooltipReactions
-                    id={params.discussionId}
+                    id={(await params).discussionId}
                     session={session}
-                    answerId={answer._id}
+                    answerId={answer.id}
                   />
                   {aggregateReactions(answer.reactions).map((reaction) => (
                     <div
@@ -290,7 +277,7 @@ export default async function DiscussionIdPage({
             </Label>
           </div>
         ) : (
-          <ReplyEditor _id={discussion._id} session={session} />
+          <ReplyEditor id={discussion.id} session={session} />
         )}
       </div>
     </div>

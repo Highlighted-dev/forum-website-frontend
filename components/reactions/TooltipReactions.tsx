@@ -1,21 +1,20 @@
 "use client";
+import { useRouter } from "next/navigation";
+import { Session } from "next-auth";
 import React from "react";
-import { AiOutlineLike, AiOutlineHeart } from "react-icons/ai";
+import { useForm } from "react-hook-form";
+import { AiOutlineHeart, AiOutlineLike } from "react-icons/ai";
 import { LiaLaughSquintSolid, LiaMehSolid } from "react-icons/lia";
 import { PiSmileySad } from "react-icons/pi";
-
+import { Button } from "../ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { Button } from "../ui/button";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { toast } from "../ui/use-toast";
 import { changeReaction } from "./ChangeReactionAction";
-import { Session } from "next-auth";
 
 export const reactions = [
   { id: 1, name: "Like", icon: <AiOutlineLike />, color: "text-blue-500" },
@@ -35,13 +34,13 @@ export default function TooltipReactions({
   session,
   answerId,
 }: {
-  id: string;
+  id: number;
   session: Session | null;
-  answerId?: string;
+  answerId?: number;
 }) {
   const { handleSubmit } = useForm();
   const [reaction, setReaction] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
+  const [_loading, setLoading] = React.useState(false);
   const router = useRouter();
   const onSubmit = async () => {
     console.log(reaction);
@@ -61,7 +60,7 @@ export default function TooltipReactions({
     }
   };
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={100}>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="outline">Hover to react</Button>

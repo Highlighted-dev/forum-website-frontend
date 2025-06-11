@@ -1,55 +1,81 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import Link from "next/link";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { Button } from "./ui/button";
-import { getCurrentUrl } from "@/utils/getCurrentUrl";
-import { calculateTime } from "@/utils/calculateTime";
-import { IDiscussion } from "@/@types/discussion";
-import { Badge } from "./ui/badge";
-import { getRankColor } from "@/utils/rankColors";
+import { InferSelectModel } from "drizzle-orm";
 import Image from "next/image";
+import Link from "next/link";
+import { db } from "@/db";
+import { answers, discussions as dbDiscussions, users } from "@/db/schema";
+import { calculateTime } from "@/utils/calculateTime";
+import { getRankColor } from "@/utils/rankColors";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Badge } from "./ui/badge";
+import { Card, CardContent } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 const getLatestDiscussions = async () => {
   try {
-    const res: Response = await fetch(
-      getCurrentUrl() + "/externalApi/discussion",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.API_KEY_TOKEN!,
+    const latestDiscussions = await db.query.discussions.findMany({
+      with: {
+        user: {
+          with: {
+            answers: true,
+            discussions: true,
+          },
         },
-        cache: "no-store",
-      }
-    );
-    if (!res.ok) throw new Error("Failed to fetch data");
+        answers: {
+          with: {
+            user: {
+              with: {
+                answers: true,
+                discussions: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: (discussions, { desc }) => [desc(discussions.createdAt)],
+      limit: 5,
+    });
+    if (!latestDiscussions) throw new Error("Failed to fetch data");
 
-    const data = ((await res.json()) as IDiscussion[]).reverse();
-    if (data && data.length > 5) {
-      const discussions = data.slice(0, 5);
+    if (latestDiscussions && latestDiscussions.length > 5) {
+      const discussions = latestDiscussions.slice(0, 5);
       return discussions;
     }
-    return data;
+    return latestDiscussions;
   } catch (e) {
     console.log(e);
     return null;
   }
 };
 
-const getLatestReplies = (discussions: IDiscussion[] | null) => {
+const getLatestReplies = (
+  discussions: Array<
+    InferSelectModel<typeof dbDiscussions> & {
+      user: InferSelectModel<typeof users> & {
+        answers: Array<InferSelectModel<typeof answers>>;
+        discussions: Array<InferSelectModel<typeof dbDiscussions>>;
+      };
+      answers: Array<
+        InferSelectModel<typeof answers> & {
+          user: InferSelectModel<typeof users> & {
+            answers: Array<InferSelectModel<typeof answers>>;
+            discussions: Array<InferSelectModel<typeof dbDiscussions>>;
+          };
+        }
+      >;
+    }
+  > | null,
+) => {
   if (!discussions) return null;
   // Get every reply and its parent discussion
   const repliesWithDiscussion = discussions
     .map((discussion) =>
       discussion.answers.map((answer) => ({
         ...answer,
-        discussionId: discussion._id,
+        discussionId: discussion.id,
         discussionTitle: discussion.title,
         discussionCategory: discussion.category,
         discussionAnswersLength: discussion.answers.length,
-      }))
+      })),
     )
     .flat()
     .sort((a, b) => {
@@ -80,7 +106,7 @@ export default async function LatestDiscussions() {
             {discussions?.map((discussion) => (
               <div
                 className="flex flex-row items-start justify-center gap-4"
-                key={discussion._id}
+                key={discussion.id}
               >
                 <Avatar className="sm:h-16 sm:w-16 h-10 w-10 shrink-0 border">
                   <Image
@@ -93,7 +119,7 @@ export default async function LatestDiscussions() {
                 </Avatar>
                 <div className="flex flex-col flex-1 justify-center ">
                   <Link
-                    href={`/discussions/${discussion._id}`}
+                    href={`/discussions/${discussion.id}`}
                     className="text-sm font-medium hover:underline text-ellipsis overflow-hidden "
                     prefetch={false}
                   >
@@ -109,9 +135,9 @@ export default async function LatestDiscussions() {
                   </div>
                   <div className="flex items-center ">
                     <Link
-                      href={`/profile/${discussion.user?._id}`}
+                      href={`/profile/${discussion.user?.id}`}
                       className={`font-medium ${getRankColor(
-                        discussion.user?.role || ""
+                        discussion.user?.role || "",
                       )} hover:underline text-xs sm:text-sm`}
                       prefetch={false}
                     >
@@ -134,7 +160,7 @@ export default async function LatestDiscussions() {
             {replies?.map((reply) => (
               <div
                 className="flex flex-row items-start justify-center gap-4"
-                key={reply._id}
+                key={reply.id}
               >
                 <Avatar className="sm:h-16 sm:w-16 h-10 w-10 shrink-0 border">
                   <Image
@@ -163,9 +189,9 @@ export default async function LatestDiscussions() {
                   </div>
                   <div className="flex items-center ">
                     <Link
-                      href={`/profile/${reply.user?._id}`}
+                      href={`/profile/${reply.user?.id}`}
                       className={`font-medium ${getRankColor(
-                        reply.user?.role || ""
+                        reply.user?.role || "",
                       )} hover:underline text-xs sm:text-sm`}
                       prefetch={false}
                     >

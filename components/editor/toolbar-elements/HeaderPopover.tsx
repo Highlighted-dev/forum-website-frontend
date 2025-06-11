@@ -1,6 +1,5 @@
 "use client";
 import { type Editor } from "@tiptap/react";
-import { Toggle } from "../../ui/toggle";
 import {
   LuHeading,
   LuHeading1,
@@ -11,6 +10,7 @@ import {
   LuHeading6,
 } from "react-icons/lu";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Toggle } from "../../ui/toggle";
 
 export function HeaderPopover({ editor }: { editor: Editor }) {
   return (

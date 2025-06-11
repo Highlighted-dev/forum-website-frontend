@@ -1,28 +1,30 @@
 "use client";
 
+import { InferSelectModel } from "drizzle-orm";
+import DOMPurify from "isomorphic-dompurify";
+import { ListOrderedIcon } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { ListOrderedIcon } from "lucide-react";
-import { IDiscussion } from "@/@types/discussion";
+import { discussions as dbDiscussions, users } from "@/db/schema";
+import { getRankColor } from "@/utils/rankColors";
 import { Badge } from "./ui/badge";
-import DOMPurify from "isomorphic-dompurify";
-import Link from "next/link";
 import {
   Pagination,
   PaginationContent,
@@ -31,8 +33,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "./ui/pagination";
-import { useSearchParams } from "next/navigation";
-import { getRankColor } from "@/utils/rankColors";
 import {
   Tooltip,
   TooltipContent,
@@ -47,7 +47,13 @@ export default function Discussions({
   totalPages,
   category,
 }: {
-  discussions: IDiscussion[] | undefined;
+  discussions:
+    | Array<
+        InferSelectModel<typeof dbDiscussions> & {
+          user: InferSelectModel<typeof users>;
+        }
+      >
+    | undefined;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
   totalPages: number;
@@ -57,6 +63,7 @@ export default function Discussions({
   const [sortBy, setSortBy] = useState("date");
   const searchParams = useSearchParams();
   const page = parseInt(searchParams.get("page") ?? "1", 10);
+  console.log(discussions);
 
   if (!discussions)
     return (
@@ -68,7 +75,7 @@ export default function Discussions({
     );
 
   const filteredDiscussions = discussions.filter((discussion) =>
-    discussion.title.toLowerCase().includes(search.toLowerCase())
+    discussion.title.toLowerCase().includes(search.toLowerCase()),
   );
 
   const sortedDiscussions = filteredDiscussions.sort((a, b) => {
@@ -82,7 +89,9 @@ export default function Discussions({
     return `/discussions/category/${category}?page=${page}`;
   };
 
-  const sanitizedHTML = (discussion: IDiscussion) => {
+  const sanitizedHTML = (
+    discussion: InferSelectModel<typeof dbDiscussions>,
+  ) => {
     if (!discussion) return;
     return {
       __html: DOMPurify.sanitize(discussion.content),
@@ -138,9 +147,9 @@ export default function Discussions({
       </div>
       <div className="grid gap-6">
         {sortedDiscussions.map((discussion) => (
-          <Card key={discussion._id} className="flex flex-col overflow-hidden">
+          <Card key={discussion.id} className="flex flex-col overflow-hidden">
             <CardHeader>
-              <Link href={`/discussions/${discussion._id}`}>
+              <Link href={`/discussions/${discussion.id}`}>
                 <div className="sm:text-5xl text-3xl font-bold text-ellipsis overflow-hidden ">
                   {discussion.title}
                 </div>
@@ -180,9 +189,9 @@ export default function Discussions({
                 </Avatar>
                 <Link
                   className={`text-sm ${getRankColor(
-                    discussion?.user.role || ""
+                    discussion?.user.role || "",
                   )}`}
-                  href={`/profile/${discussion.user._id}`}
+                  href={`/profile/${discussion.user.id}`}
                 >
                   {discussion.user.name}
                 </Link>
@@ -203,7 +212,7 @@ export default function Discussions({
             const isDisabled = pageNumber < 1 || pageNumber > totalPages;
 
             return (
-              <PaginationItem key={pageNumber}>
+              <PaginationItem key={`pagination-${pageNumber}-${i}`}>
                 <PaginationLink
                   href={isDisabled ? "#" : url(pageNumber)}
                   isActive={pageNumber === page}

@@ -1,18 +1,18 @@
 "use client";
 import { useEditor } from "@tiptap/react";
 import "../../styles/editor.css";
-import { toast } from "../ui/use-toast";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
-import { FaChevronLeft } from "react-icons/fa";
-import { editorExtensions, editorProps } from "./editorConfig";
-import EditorBase, { IFormData } from "./EditorBase";
-import { Button } from "../ui/button";
 import Link from "next/link";
-import { Session } from "next-auth";
-import { createPost } from "./PostSubmitAction";
 import { useRouter } from "next/navigation";
+import { Session } from "next-auth";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { FaChevronLeft } from "react-icons/fa";
+import { ImSpinner2 } from "react-icons/im";
+import { Button } from "../ui/button";
+import { toast } from "../ui/use-toast";
+import EditorBase, { IFormData } from "./EditorBase";
+import { editorExtensions, editorProps } from "./editorConfig";
+import { createPost } from "./PostSubmitAction";
 
 export function DiscussionEditor({
   title,
@@ -28,6 +28,7 @@ export function DiscussionEditor({
   const router = useRouter();
 
   const editor = useEditor({
+    immediatelyRender: false,
     editorProps: editorProps,
     extensions: editorExtensions,
     content: content || "",
@@ -58,7 +59,7 @@ export function DiscussionEditor({
         "/externalApi/discussion",
         undefined,
         formData.title,
-        formData.category
+        formData.category,
       );
     } catch (error) {
       console.error("Failed to send message", error);

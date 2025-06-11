@@ -1,12 +1,13 @@
 "use client";
-import { IDiscussion } from "@/@types/discussion";
+import { InferSelectModel } from "drizzle-orm";
 import { Lock, Unlock } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Session } from "next-auth";
 import React from "react";
-import { Button } from "./ui/button";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { discussions } from "@/db/schema";
 import { lockDiscussion } from "./LockDiscussionAction";
+import { Button } from "./ui/button";
 import { toast } from "./ui/use-toast";
 
 export default function LockDiscussionForm({
@@ -14,7 +15,7 @@ export default function LockDiscussionForm({
   discussion,
 }: {
   session: Session | null;
-  discussion: IDiscussion;
+  discussion: InferSelectModel<typeof discussions>;
 }) {
   const { handleSubmit } = useForm();
   const [loading, setLoading] = React.useState(false);
@@ -24,11 +25,7 @@ export default function LockDiscussionForm({
     setLoading(true);
     let result;
     try {
-      result = await lockDiscussion(
-        closing.toString(),
-        discussion._id,
-        session
-      );
+      result = await lockDiscussion(closing.toString(), discussion.id, session);
     } catch (error) {
       console.error("Failed to send message", error);
     } finally {

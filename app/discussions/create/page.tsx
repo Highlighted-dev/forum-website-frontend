@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { DiscussionEditor } from "@/components/editor/DiscussionEditor";
-import React from "react";
 
 export default async function CreatePage() {
   const session = await auth();

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.0.0-beta.6/schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": false },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!/node_modules",
+      "!**/.*.js",
+      "!**/node_modules/**",
+      "!**/postcss.config.mjs",
+      "!**/tailwind.config.ts",
+      "!**/next.config.js",
+      "!**/.next/**",
+      "!**/.turbo/**",
+      "!**/dist/**",
+      "!**/next-env.d.ts",
+      "!**/public/",
+      "!**/index.d.ts",
+      "!**/test-results/",
+      "!**/playwright-report",
+      "!**/blob-report/",
+      "!**/playwright/.cache/"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": false,
+      "complexity": {
+        "noUselessTypeConstraint": "error",
+        "useLiteralKeys": "error",
+        "useOptionalChain": "error"
+      },
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error"
+      },
+      "style": {
+        "noInferrableTypes": "error",
+        "noNamespace": "error",
+        "useAsConstAssertion": "error",
+        "useBlockStatements": "off",
+        "useConsistentArrayType": "off",
+        "useForOf": "error",
+        "useShorthandFunctionType": "error",
+        "useArrayLiterals": "off"
+      },
+      "suspicious": {
+        "noEmptyBlockStatements": "error",
+        "noExplicitAny": "error",
+        "noExtraNonNullAssertion": "error",
+        "noMisleadingInstantiator": "error",
+        "noUnsafeDeclarationMerging": "error",
+        "useAwait": "off",
+        "useNamespaceKeyword": "error"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": { "quoteStyle": "double" },
+    "globals": ["React", "JSX"]
+  },
+  "overrides": [{ "includes": ["!**/node_modules/**"] }]
+}

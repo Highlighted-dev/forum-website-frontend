@@ -1,6 +1,8 @@
 "use client";
+import { InferSelectModel } from "drizzle-orm";
+import { HeartIcon, TextIcon, UploadIcon } from "lucide-react";
 import { Session } from "next-auth";
-import { IDiscussion } from "@/@types/discussion";
+import { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Card,
@@ -8,31 +10,29 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import React, { useState } from "react";
+import { answers, discussions, users } from "@/db/schema";
+import { getRankColor } from "@/utils/rankColors";
 import { Button } from "../ui/button";
-import { HeartIcon, TextIcon, UploadIcon } from "lucide-react";
-import { Input } from "../ui/input";
-import { IUser } from "@/@types/next-auth";
-import EditProfileForm from "./EditProfileForm";
+import { Label } from "../ui/label";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { Label } from "../ui/label";
-import { getRankColor } from "@/utils/rankColors";
+import EditProfileForm from "./EditProfileForm";
 
 export default function ProfileCard({
   session,
   user,
 }: {
   session: Session;
-  user?: IUser & {
-    _id: string;
-    numberOfDiscussions: number;
-    numberOfReplies: number;
-  };
+  user?:
+    | (InferSelectModel<typeof users> & {
+        answers: InferSelectModel<typeof answers>[];
+        discussions: InferSelectModel<typeof discussions>[];
+      })
+    | null;
 }) {
   const [editing, setEditing] = useState(false);
   return (
@@ -50,7 +50,7 @@ export default function ProfileCard({
             <h3 className="text-lg font-semibold ">Bio</h3>
             <p className="text-sm text-gray-300">{user?.bio ?? "No bio set"}</p>
           </div>
-          {user?._id === session?.user?.id && (
+          {user?.id === session?.user?.id && (
             <Button className="mb-4" onClick={() => setEditing(!editing)}>
               Edit Profile
             </Button>
@@ -80,7 +80,10 @@ export default function ProfileCard({
               </TooltipProvider>
             </CardTitle>
             <CardDescription>
-              {user?.numberOfDiscussions || 0 + 0 || user?.numberOfReplies}
+              {user?.discussions.length ||
+                0 + 0 ||
+                user?.answers.length ||
+                0}{" "}
             </CardDescription>
           </CardHeader>
         </Card>

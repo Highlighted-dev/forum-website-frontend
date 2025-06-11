@@ -1,20 +1,22 @@
+import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import ProfileCard from "@/components/profile/ProfileCard";
-import { getCurrentUrl } from "@/utils/getCurrentUrl";
+import { db } from "@/db";
+import { users } from "@/db/schema";
 
 const getUser = async (userId: string) => {
   try {
-    const response = await fetch(
-      getCurrentUrl() + `/externalApi/user/${userId}`,
-      {
-        method: "GET",
-        headers: {
-          "x-api-key": process.env.API_KEY_TOKEN!,
-        },
-      }
-    );
-    const data = await response.json();
-    return data;
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, userId),
+      with: {
+        answers: true,
+        discussions: true,
+      },
+    });
+    if (!user) {
+      return null;
+    }
+    return user;
   } catch (e) {
     console.log(e);
     return null;
@@ -24,10 +26,10 @@ const getUser = async (userId: string) => {
 export default async function ProfilePage({
   params,
 }: {
-  params: { userId: string };
+  params: Promise<{ userId: string }>;
 }) {
   const session = await auth();
-  const user = await getUser(params.userId);
+  const user = await getUser((await params).userId);
   if (!session) return null;
   return (
     <div className="flex flex-col items-center justify-center md:m-auto my-auto mx-3">

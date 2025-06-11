@@ -1,58 +1,39 @@
+import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
+import { Suspense } from "react";
 import ChatBox from "@/components/chatbox/ChatBox";
 import LatestDiscussions from "@/components/LatestDiscussions";
-import { getCurrentUrl } from "@/utils/getCurrentUrl";
-import { IDiscussion } from "@/@types/discussion";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import DOMPurify from "isomorphic-dompurify";
+import { Label } from "@/components/ui/label";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Label } from "@/components/ui/label";
-import { Suspense } from "react";
+import { db } from "@/db";
+import { discussions } from "@/db/schema";
 import MainPageLoading from "./mainPageLoading";
 
-// Function to get discussions from API
 const getDiscussions = async () => {
   try {
-    const res: Response = await fetch(
-      getCurrentUrl() + `/externalApi/discussion`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.API_KEY_TOKEN!,
-        },
-        cache: "no-store",
-      }
-    );
-    if (!res.ok) throw new Error("Failed to fetch data");
-    const data = (await res.json()) as IDiscussion[];
-    if (data.length > 0) {
-      // Get only data that has featured = true, only up to 6 discussions.
-      const discussions = data
-        .filter((discussion) => discussion.featured)
-        .slice(0, 6);
-      // Now substring the content to only show the first 100 characters. Also if the content is too long, add "..." at the end.
-      discussions.forEach((discussion) => {
-        discussion.content =
-          discussion.content.length > 100
-            ? discussion.content.substring(0, 100) + "<p>...</p>"
-            : discussion.content;
-      });
-      return discussions;
-    }
+    const allDiscussions = await db.select().from(discussions);
 
-    return data;
+    if (!allDiscussions || allDiscussions.length === 0) {
+      return [];
+    }
+    allDiscussions.forEach((discussion) => {
+      discussion.content =
+        discussion.content.length > 100
+          ? discussion.content.substring(0, 100) + "<p>...</p>"
+          : discussion.content;
+    });
+    return allDiscussions;
   } catch (e) {
     console.log(e);
     return null;
@@ -78,37 +59,41 @@ async function MainPage() {
             Featured discussions
           </h1>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {discussions?.map((discussion) => (
-              <Card
-                key={discussion._id}
-                className="sm:grid grid-rows-5 flex flex-col"
-              >
-                <div className="row-span-4 flex flex-col">
-                  <CardHeader>
-                    <div className="sm:text-5xl text-3xl font-bold text-ellipsis overflow-hidden ">
-                      {discussion.title}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div
-                      className="text-sm "
-                      dangerouslySetInnerHTML={{
-                        __html: sanitizeHTML(discussion.content),
-                      }}
-                    />
-                  </CardContent>
-                </div>
-                <CardFooter className="flex justify-end">
-                  <Link
-                    href={`/discussions/${discussion._id}`}
-                    className="text-sm"
-                    prefetch={false}
-                  >
-                    Read more
-                  </Link>
-                </CardFooter>
-              </Card>
-            ))}
+            {discussions
+              ?.sort((a, b) => {
+                return Number(b.featured) - Number(a.featured);
+              })
+              ?.map((discussion) => (
+                <Card
+                  key={discussion.id}
+                  className="sm:grid grid-rows-5 flex flex-col"
+                >
+                  <div className="row-span-4 flex flex-col">
+                    <CardHeader>
+                      <div className="sm:text-5xl text-3xl font-bold text-ellipsis overflow-hidden ">
+                        {discussion.title}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div
+                        className="text-sm "
+                        dangerouslySetInnerHTML={{
+                          __html: sanitizeHTML(discussion.content),
+                        }}
+                      />
+                    </CardContent>
+                  </div>
+                  <CardFooter className="flex justify-end">
+                    <Link
+                      href={`/discussions/${discussion.id}`}
+                      className="text-sm"
+                      prefetch={false}
+                    >
+                      Read more
+                    </Link>
+                  </CardFooter>
+                </Card>
+              ))}
           </div>
         </div>
       </main>

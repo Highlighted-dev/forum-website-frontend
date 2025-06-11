@@ -1,16 +1,16 @@
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+import { MenuIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { Session } from "next-auth";
+import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuList,
   NavigationMenuLink,
+  NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { SignIn } from "./SignIn";
-import { Session } from "next-auth";
-import { MenuIcon } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ProfileDropdown from "./profile/ProfileDropdown";
-import Image from "next/image";
+import { SignIn } from "./SignIn";
 
 export default function NavBar({ session }: { session: Session | null }) {
   const links = [

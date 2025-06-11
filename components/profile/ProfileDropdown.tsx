@@ -1,4 +1,9 @@
-import React from "react";
+import Link from "next/link";
+import { Session } from "next-auth";
+import { FaRegUser } from "react-icons/fa";
+import { LuArrowBigRight } from "react-icons/lu";
+import { SignOut } from "../SignOut";
+import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,12 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { SignOut } from "../SignOut";
-import Link from "next/link";
-import { Button } from "../ui/button";
-import { FaRegUser } from "react-icons/fa";
-import { LuArrowBigRight } from "react-icons/lu";
-import { Session } from "next-auth";
 
 export default function ProfileDropdown({
   session,

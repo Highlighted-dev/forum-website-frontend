@@ -1,12 +1,12 @@
 "use client";
+import { useRouter } from "next/navigation";
+import { Session } from "next-auth";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "../ui/use-toast";
-import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { Input } from "../ui/input";
-import { Session } from "next-auth";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { toast } from "../ui/use-toast";
 import { editProfileAction } from "./EditProfileAction";
 
 export interface IEditProfileFormValues {
@@ -24,7 +24,7 @@ export default function EditProfileForm({
   editing: boolean;
 }) {
   const { register, handleSubmit, reset } = useForm<IEditProfileFormValues>();
-  const [loading, setLoading] = React.useState(false);
+  const [_loading, setLoading] = React.useState(false);
   const router = useRouter();
   const onSubmit = async (formData: IEditProfileFormValues) => {
     setLoading(true);

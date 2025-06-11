@@ -1,8 +1,8 @@
 "use client";
 import { type Editor } from "@tiptap/react";
 import { LuTable } from "react-icons/lu";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Button } from "../../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 export function TablePopover({ editor }: { editor: Editor }) {
   return (
     <Popover>

@@ -1,9 +1,7 @@
 "use client";
-import React from "react";
-import { EditorToolbar } from "./EditorToolbar";
 import { Editor, EditorContent } from "@tiptap/react";
-import TextareaAutosize from "react-textarea-autosize";
 import { UseFormRegister } from "react-hook-form";
+import TextareaAutosize from "react-textarea-autosize";
 import {
   Select,
   SelectContent,
@@ -11,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { EditorToolbar } from "./EditorToolbar";
 
 export interface IFormData {
   title: string;

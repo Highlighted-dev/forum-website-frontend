@@ -1,3 +1,4 @@
+import { SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,8 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SettingsIcon } from "lucide-react";
-import React from "react";
 
 export default function MainPageLoading() {
   return (

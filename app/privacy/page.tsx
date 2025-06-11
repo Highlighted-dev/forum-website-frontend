@@ -1,4 +1,3 @@
-import React from "react";
 import "../../styles/editor.css";
 import { Separator } from "@/components/ui/separator";
 export default function PrivacyPage() {

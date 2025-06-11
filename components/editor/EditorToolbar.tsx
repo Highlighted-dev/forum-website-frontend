@@ -1,21 +1,23 @@
 "use client";
 import { type Editor } from "@tiptap/react";
-import { Toggle } from "../ui/toggle";
-import { LuBold } from "react-icons/lu";
-import { LuItalic } from "react-icons/lu";
-import { LuStrikethrough } from "react-icons/lu";
-import { LuUnderline } from "react-icons/lu";
-import { LuHighlighter } from "react-icons/lu";
-import { LuList } from "react-icons/lu";
-import { LuImage } from "react-icons/lu";
-import { MdOutlineFormatListNumbered } from "react-icons/md";
+import {
+  Bold,
+  Highlighter,
+  Image,
+  Italic,
+  List,
+  ListOrderedIcon,
+  Strikethrough,
+  Underline,
+} from "lucide-react";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
+import { Toggle } from "../ui/toggle";
+import { GroupedBasicFormatters } from "./toolbar-elements/GroupedBaiscFormatters";
 import { HeaderPopover } from "./toolbar-elements/HeaderPopover";
 import { TablePopover } from "./toolbar-elements/TablePopover";
 import { TextAlignPopover } from "./toolbar-elements/TextAlignPopover";
-import { GroupedBasicFormatters } from "./toolbar-elements/GroupedBaiscFormatters";
 
 export function EditorToolbar({ editor }: { editor: Editor }) {
   return (
@@ -38,35 +40,35 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
           pressed={editor.isActive("bold")}
           onPressedChange={() => editor.chain().focus().toggleBold().run()}
         >
-          <LuBold size={20} />
+          <Bold size={20} />
         </Toggle>
         <Toggle
           size="sm"
           pressed={editor.isActive("italic")}
           onPressedChange={() => editor.chain().focus().toggleItalic().run()}
         >
-          <LuItalic size={18} />
+          <Italic size={18} />
         </Toggle>
         <Toggle
           size="sm"
           pressed={editor.isActive("strike")}
           onPressedChange={() => editor.chain().focus().toggleStrike().run()}
         >
-          <LuStrikethrough size={18} />
+          <Strikethrough size={18} />
         </Toggle>
         <Toggle
           size="sm"
           pressed={editor.isActive("underline")}
           onPressedChange={() => editor.chain().focus().toggleUnderline().run()}
         >
-          <LuUnderline size={18} />
+          <Underline size={18} />
         </Toggle>
         <Toggle
           size="sm"
           pressed={editor.isActive("highlight")}
           onPressedChange={() => editor.chain().focus().toggleHighlight().run()}
         >
-          <LuHighlighter size={18} />
+          <Highlighter size={18} />
         </Toggle>
       </div>
 
@@ -76,19 +78,19 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
         pressed={editor.isActive("bulletList")}
         onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
       >
-        <LuList size={23} />
+        <List size={23} />
       </Toggle>
       <Toggle
         size="sm"
         pressed={editor.isActive("orderedList")}
         onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
       >
-        <MdOutlineFormatListNumbered size={23} />
+        <ListOrderedIcon size={23} />
       </Toggle>
       <Separator orientation="vertical" className="w-[1px] h-8" />
       <Popover>
         <PopoverTrigger className="flex flex-row justify-center items-center p-1">
-          <LuImage size={20} />
+          <Image size={20} />
         </PopoverTrigger>
         <PopoverContent className="flex justify-center items-center">
           <Input

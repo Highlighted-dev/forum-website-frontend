@@ -1,25 +1,25 @@
 "use client";
 import { useEditor } from "@tiptap/react";
 import "../../styles/editor.css";
-import { toast } from "../ui/use-toast";
-import { useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
-import { FaChevronLeft } from "react-icons/fa";
-import { editorExtensions, editorProps } from "./editorConfig";
-import EditorBase, { IFormData } from "./EditorBase";
-import { Button } from "../ui/button";
 import Link from "next/link";
-import { Session } from "next-auth";
-import { createPost } from "./PostSubmitAction";
-import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { Session } from "next-auth";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { FaChevronLeft } from "react-icons/fa";
+import { ImSpinner2 } from "react-icons/im";
+import { Button } from "../ui/button";
+import { toast } from "../ui/use-toast";
+import EditorBase from "./EditorBase";
+import { editorExtensions, editorProps } from "./editorConfig";
+import { createPost } from "./PostSubmitAction";
 
 export function ReplyEditor({
   session,
-  _id,
+  id,
 }: {
   session: Session | null;
-  _id: string;
+  id: number;
 }) {
   const { handleSubmit } = useForm();
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -41,14 +41,14 @@ export function ReplyEditor({
 
   const onSubmit = async () => {
     const content = editor.getHTML();
-    if (!content || !_id)
+    if (!content || !id)
       return toast({
         title: "Error",
         description: "Content and _id are required",
       });
     try {
       setIsSaving(true);
-      await createPost(content, session, "/externalApi/discussion", _id);
+      await createPost(content, session, "/externalApi/discussion", id);
     } catch (error) {
       console.error("Failed to create post", error);
     } finally {
