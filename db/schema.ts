@@ -84,7 +84,6 @@ export const authenticators = pgTable(
   ],
 );
 
-// USERS
 export const users = pgTable("users", {
   id: text("id")
     .primaryKey()
@@ -100,7 +99,6 @@ export const users = pgTable("users", {
     .notNull(),
 });
 
-// DISCUSSIONS
 export const discussions = pgTable("discussions", {
   id: serial("id").primaryKey(),
   userId: text("user_id")
@@ -120,7 +118,6 @@ export const discussions = pgTable("discussions", {
   closed: boolean("closed").default(false),
 });
 
-// ANSWERS
 export const answers = pgTable("answers", {
   id: serial("id").primaryKey(),
   discussionId: integer("discussion_id")
@@ -138,7 +135,6 @@ export const answers = pgTable("answers", {
     .notNull(),
 });
 
-// DISCUSSION REACTIONS
 export const discussionReactions = pgTable("discussion_reactions", {
   id: serial("id").primaryKey(),
   discussionId: integer("discussion_id")
@@ -150,7 +146,6 @@ export const discussionReactions = pgTable("discussion_reactions", {
   reaction: varchar("reaction", { length: 50 }).notNull(),
 });
 
-// ANSWER REACTIONS
 export const answerReactions = pgTable("answer_reactions", {
   id: serial("id").primaryKey(),
   answerId: integer("answer_id")
@@ -162,7 +157,6 @@ export const answerReactions = pgTable("answer_reactions", {
   reaction: varchar("reaction", { length: 50 }).notNull(),
 });
 
-// MESSAGES
 export const messages = pgTable("messages", {
   id: serial("id").primaryKey(),
   userId: text("user_id")
@@ -173,8 +167,6 @@ export const messages = pgTable("messages", {
     .defaultNow()
     .notNull(),
 });
-
-// RELATIONS
 
 export const usersRelations = relations(users, ({ many }) => ({
   discussions: many(discussions),

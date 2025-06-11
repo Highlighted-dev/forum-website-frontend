@@ -36,7 +36,7 @@ export default async function CategoryPage({
   searchParams,
   params,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ page?: string }>;
   params: Promise<{ category: string }>;
 }) {
   const _params = await params;
