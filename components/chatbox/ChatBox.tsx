@@ -41,10 +41,9 @@ const getChatMessages = async () => {
 
     if (allMessages && allMessages.length > 50) {
       const messages = allMessages.slice(0, 50);
-      messages.reverse();
       return messages;
     }
-    return allMessages.reverse();
+    return allMessages
   } catch (e) {
     console.log(e);
     return null;
