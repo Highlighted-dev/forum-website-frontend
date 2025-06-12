@@ -27,6 +27,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/next.config.mjs ./next.config.mjs
 COPY --from=builder /app/drizzle ./drizzle
+COPY --from=builder /app/.env.example ./.env
 COPY --from=builder /app/db ./db
 COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
 
