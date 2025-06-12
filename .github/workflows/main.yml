@@ -45,6 +45,10 @@ jobs:
 
       - name: Set up Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
+      - name: Create dummy .docker.env
+        run: |
+          echo "DATABASE_URL=postgres://forumuser:forumpassword@db:5432/forum" > .docker.env
+          echo "NEXT_PUBLIC_API_URL=http://localhost:3000" >> .docker.env
 
       - name: Build Docker Compose services
         run: docker-compose build
