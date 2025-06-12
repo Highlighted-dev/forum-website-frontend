@@ -7,7 +7,7 @@ import { ImSpinner2 } from "react-icons/im";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { toast } from "../ui/use-toast";
-import { sendMessage } from "./SendMessageAction";
+import { sendMessage } from "./sendMessageAction";
 export interface MessageFormValues {
   message: string;
 }
