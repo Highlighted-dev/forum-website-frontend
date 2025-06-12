@@ -11,7 +11,10 @@ import * as schema from "./schema";
 
 let db: NeonHttpDatabase<typeof schema> | PostgresJsDatabase<typeof schema>;
 
-if (process.env.NODE_ENV === "production") {
+if (
+  process.env.NODE_ENV === "production" &&
+  process.env.DATABASE_URL?.includes("neon.tech")
+) {
   // Use Neon in production
   db = neonDrizzle(process.env.DATABASE_URL, { schema });
 } else {
