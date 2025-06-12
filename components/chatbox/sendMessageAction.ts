@@ -8,12 +8,14 @@ import { messages } from "@/db/schema";
 dotenv.config();
 
 const isMessageValid = (message: string): boolean => {
-  // Message must be at least 1 character long and maximum 500 characters long.
-  // Message must contain only alphanumeric characters, spaces, special characters and emojis (ex. ♿🔥).
-  const messageRegex =
-    /^[a-zA-Z0-9\s!@#()<>_.:=#,;'"?/\]\[\uD83C-\uDBFF\uDC00-\uDFFFĄąĆćĘęŁłŃńÓóŚśŹźŻż:\-–—]{1,5000}$/;
-
-  return messageRegex.test(message);
+  // Allow any string between 1 and 5000 characters (including emojis and special chars)
+  // Reject if message is only numeric
+  return (
+    typeof message === "string" &&
+    message.length > 0 &&
+    message.length <= 5000 &&
+    !/^\d+$/.test(message)
+  );
 };
 
 export async function sendMessage(data: FormData, session: Session | null) {
@@ -23,22 +25,29 @@ export async function sendMessage(data: FormData, session: Session | null) {
       message: "You must be logged in to send a message",
     };
   }
-  if (!data.get("message") || typeof data.get("message") !== "string") {
+  const rawMessage = data.get("message");
+  // If not a string, treat as missing/required
+  if (typeof rawMessage !== "string") {
     return {
       status: "Error",
       message: "Message is required",
     };
   }
-  if (!isMessageValid(data.get("message") as string)) {
+  if (!rawMessage.trim()) {
+    return {
+      status: "Error",
+      message: "Message is required",
+    };
+  }
+  if (!isMessageValid(rawMessage)) {
     return {
       status: "Error",
       message: "Message is invalid",
     };
   }
-  const message = data.get("message") as string;
   await db.insert(messages).values({
     userId: session.user.id,
-    content: message,
+    content: rawMessage,
   });
 
   return {

@@ -40,7 +40,7 @@ export async function editProfileAction(
         "Username must be between 4 and 22 characters long and can only contain alphanumeric characters and these special characters: !@#()_.",
     };
   }
-  if (data.bio && (data.bio.length < 1 || data.bio.length > 500)) {
+  if (typeof data.bio === "string" && (data.bio.length < 1 || data.bio.length > 500)) {
     return {
       status: "error",
       message: "Bio must be between 1 and 500 characters",

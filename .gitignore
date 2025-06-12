@@ -9,7 +9,7 @@
 /drizzle
 # testing
 /coverage
-
+copilot-instructions.md
 # next.js
 /.next/
 /out/

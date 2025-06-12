@@ -11,7 +11,10 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "format": "pnpm biome check --write",
-    "lint": "pnpm biome lint --write --unsafe"
+    "lint": "pnpm biome lint --write --unsafe",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.9.1",
@@ -57,11 +60,11 @@
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.44.2",
     "isomorphic-dompurify": "^2.25.0",
-    "jsdom": "^26.1.0",
     "lucide-react": "^0.511.0",
     "mongodb": "^6.16.0",
     "next": "^15.3.3",
     "next-auth": "5.0.0-beta.28",
+    "postgres": "^3.4.7",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.4",
@@ -74,14 +77,20 @@
   "devDependencies": {
     "@biomejs/biome": "2.0.0-beta.6",
     "@tailwindcss/typography": "^0.5.16",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^22.15.29",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",
+    "@vitest/coverage-c8": "^0.33.0",
+    "@vitest/ui": "^3.2.3",
     "drizzle-kit": "^0.31.1",
+    "jsdom": "^26.1.0",
     "postcss": "^8.5.4",
     "tailwindcss": "^3.4.16",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.3"
   },
   "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }

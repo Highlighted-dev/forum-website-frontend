@@ -123,7 +123,7 @@ async function MainPage() {
             >
               Privacy Policy
             </Link>
-            <TooltipProvider>
+            <TooltipProvider delayDuration={0}>
               <Tooltip>
                 <TooltipTrigger className="text-sm">Contact</TooltipTrigger>
                 <TooltipContent>
