@@ -126,7 +126,7 @@ export default async function ChatBox() {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col w-full border-t p-6">
-        {getCookie("displayTip", { cookies }) == "false" ? null : (
+        {await getCookie("displayTip", { cookies }) == "false" ? null : (
           <CardDescription className="mb-2 flex flex-row justify-start">
             Tip: Hit <FaWindows className="ml-2 mr-1 h-5 w-3" /> + "." for
             emotes
