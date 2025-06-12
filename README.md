@@ -1,6 +1,10 @@
 # Forum website frontend
 
-This project was made as a discussion forum dedicated to Garry's Mod servers. It is based on NextJS, ExpressJS and MongoDB. For backend docs please go to [Forum-website-backend](https://github.com/Highlighted-dev/forum-website-backend)
+This project was made as a discussion forum dedicated to Garry's Mod servers. It is based on Nextjs and PostgreSQL. 
+
+If you want the version with separate backend and mongodb, switch to v1 tag on github. For backend docs please go to [Forum-website-backend](https://github.com/Highlighted-dev/forum-website-backend).
+
+
 
 ## Table of Contents
 
