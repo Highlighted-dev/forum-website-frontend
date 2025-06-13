@@ -43,7 +43,7 @@ const getChatMessages = async () => {
       const messages = allMessages.slice(0, 50);
       return messages;
     }
-    return allMessages
+    return allMessages;
   } catch (e) {
     console.log(e);
     return null;
@@ -80,7 +80,7 @@ export default async function ChatBox() {
   return (
     <Card className=" max-w-[900px]">
       <CardHeader className="flex flex-row items-center justify-between p-6 border-b">
-        <CardTitle>Chat</CardTitle>
+        <CardTitle>ChatBox</CardTitle>
         <ChatSettings />
       </CardHeader>
       <CardContent className="h-[300px] overflow-y-auto pt-3">
