@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const nextConfig = {
+  serverExternalPackages: ["isomorphic-dompurify", "jsdom"],
   async rewrites() {
     return [
       {
