@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm";
-import DOMPurify from "isomorphic-dompurify";
 import { Lock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { db } from "@/db";
 import { discussions } from "@/db/schema";
+import { sanitizeHTML } from "@/lib/sanitize";
 import { getRankColor } from "@/utils/rankColors";
 
 const getDiscussion = async (id: number) => {
@@ -117,8 +117,8 @@ export default async function DiscussionIdPage({
       </div>
     );
 
-  const sanitizedHTML = (content: string) => {
-    return { __html: DOMPurify.sanitize(content) };
+  const toSanitizedHTML = (content: string) => {
+    return { __html: sanitizeHTML(content) };
   };
 
   return (
@@ -172,7 +172,7 @@ export default async function DiscussionIdPage({
             <CardContent>
               <div
                 className="text-ellipsis overflow-hidden"
-                dangerouslySetInnerHTML={sanitizedHTML(discussion.content)}
+                dangerouslySetInnerHTML={toSanitizedHTML(discussion.content)}
                 id={"editor"}
               />
             </CardContent>
@@ -242,7 +242,7 @@ export default async function DiscussionIdPage({
             <div className="col-span-5">
               <CardContent className="mt-4">
                 <div
-                  dangerouslySetInnerHTML={sanitizedHTML(answer.content)}
+                  dangerouslySetInnerHTML={toSanitizedHTML(answer.content)}
                   id={"editor"}
                 />
               </CardContent>

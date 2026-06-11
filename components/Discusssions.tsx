@@ -1,7 +1,7 @@
 "use client";
 
 import { InferSelectModel } from "drizzle-orm";
-import DOMPurify from "isomorphic-dompurify";
+import DOMPurify from "dompurify";
 import { ListOrderedIcon } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";

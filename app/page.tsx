@@ -1,4 +1,3 @@
-import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
 import { Suspense } from "react";
 import ChatBox from "@/components/chatbox/ChatBox";
@@ -18,6 +17,7 @@ import {
 } from "@/components/ui/tooltip";
 import { db } from "@/db";
 import { discussions } from "@/db/schema";
+import { sanitizeHTML } from "@/lib/sanitize";
 import MainPageLoading from "./mainPageLoading";
 
 const getDiscussions = async () => {
@@ -43,11 +43,6 @@ const getDiscussions = async () => {
     console.log(e);
     return null;
   }
-};
-
-// Function to sanitize HTML content
-const sanitizeHTML = (content: string) => {
-  return DOMPurify.sanitize(content);
 };
 
 async function MainPage() {
